@@ -1,0 +1,3219 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ví Gia Đình – Quản Lý Chi Tiêu</title>
+
+<!-- PWA Meta Tags -->
+<meta name="application-name" content="Ví Gia Đình"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Ví Gia Đình"/>
+<meta name="description" content="Ứng dụng quản lý chi tiêu gia đình – theo dõi thu chi, ngân sách, báo cáo cho vợ chồng"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#0dcc9c"/>
+<meta name="msapplication-TileColor" content="#0dcc9c"/>
+
+<!-- PWA Icons (inline SVG as data URI) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230dcc9c'/><text y='.9em' font-size='72' x='12'>💰</text></svg>"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230dcc9c'/><text y='.9em' font-size='72' x='12'>💰</text></svg>"/>
+
+<!-- PWA Manifest (injected inline via JS below) -->
+<link rel="manifest" id="pwa-manifest"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+// Inject PWA manifest as blob URL
+(function(){
+  const manifest = {
+    name: "Ví Gia Đình – Quản Lý Chi Tiêu",
+    short_name: "Ví Gia Đình",
+    description: "Quản lý chi tiêu gia đình dành cho vợ chồng",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#f0f4f3",
+    theme_color: "#0dcc9c",
+    orientation: "portrait-primary",
+    categories: ["finance", "productivity"],
+    icons: [
+      {
+        src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%230dcc9c'/><text y='.85em' font-size='380' x='60'>💰</text></svg>",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ],
+    screenshots: [],
+    shortcuts: [
+      { name: "Thêm giao dịch", short_name: "Thêm", description: "Thêm giao dịch mới", url: "./#add" },
+      { name: "Xem báo cáo", short_name: "Báo cáo", description: "Xem báo cáo chi tiêu", url: "./#reports" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+})();
+</script>
+<style>
+:root {
+  --bg: #f0f4f3;
+  --surface: #ffffff;
+  --surface2: #f7fafa;
+  --border: #e2ece9;
+  --text: #0d1f1c;
+  --text2: #4a6460;
+  --text3: #8aaba5;
+  --primary: #0dcc9c;
+  --primary-dim: #e0faf3;
+  --primary-dark: #089970;
+  --accent: #ff6b6b;
+  --accent-dim: #fff0f0;
+  --income: #10b981;
+  --income-dim: #ecfdf5;
+  --expense: #f43f5e;
+  --expense-dim: #fff1f2;
+  --wife: #a855f7;
+  --wife-dim: #faf5ff;
+  --husband: #3b82f6;
+  --husband-dim: #eff6ff;
+  --warning: #f59e0b;
+  --warning-dim: #fffbeb;
+  --shadow: 0 2px 16px rgba(13,204,156,0.08);
+  --shadow-lg: 0 8px 32px rgba(13,204,156,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+[data-theme="dark"] {
+  --bg: #0a1a17;
+  --surface: #111f1c;
+  --surface2: #162520;
+  --border: #1e3530;
+  --text: #e8f5f2;
+  --text2: #7ab8b0;
+  --text3: #3d6e68;
+  --primary-dim: #0d2e24;
+  --income-dim: #0a2b1e;
+  --expense-dim: #2b0f16;
+  --wife-dim: #1e0a2b;
+  --husband-dim: #0a1526;
+  --warning-dim: #2b1e0a;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
+.material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;font-size:20px}
+.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+
+/* APP SHELL */
+#app{max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+.screen{display:none;flex-direction:column;flex:1;min-height:0;animation:fadeIn .2s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.header{padding:16px 20px 12px;display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.header h1{flex:1;font-size:18px;font-weight:800;letter-spacing:-0.3px}
+.header-btn{width:38px;height:38px;border-radius:12px;border:none;background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.header-btn:hover{background:var(--primary-dim);color:var(--primary)}
+
+/* BOTTOM NAV */
+.bottom-nav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding:8px 4px calc(8px + env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 8px;border:none;background:transparent;cursor:pointer;color:var(--text3);transition:all .15s;border-radius:12px}
+.nav-btn.active{color:var(--primary)}
+.nav-btn span.label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.nav-btn .material-symbols-rounded{font-size:22px;transition:transform .15s}
+.nav-btn.active .material-symbols-rounded{transform:translateY(-1px)}
+
+/* SCROLL CONTENT */
+.scroll-content{flex:1;overflow-y:auto;padding:16px 20px 0;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{width:0}
+
+/* CARDS */
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-sm{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px 16px;margin-bottom:10px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-full{width:100%}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary)}
+.btn-danger{background:var(--expense-dim);color:var(--expense)}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:9px}
+.btn-icon{width:36px;height:36px;padding:0;border-radius:10px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.badge-income{background:var(--income-dim);color:var(--income)}
+.badge-expense{background:var(--expense-dim);color:var(--expense)}
+.badge-wife{background:var(--wife-dim);color:var(--wife)}
+.badge-husband{background:var(--husband-dim);color:var(--husband)}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:16px}
+.form-label{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.form-control{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:15px;transition:border-color .15s;outline:none}
+.form-control:focus{border-color:var(--primary)}
+.form-control::placeholder{color:var(--text3)}
+select.form-control{cursor:pointer}
+
+/* AMOUNT INPUT */
+.amount-input-wrap{position:relative}
+.amount-input-wrap .currency{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--text3);font-size:13px}
+.amount-input{font-size:24px;font-weight:800;font-family:'JetBrains Mono',monospace;padding-right:48px}
+
+/* TYPE TOGGLE */
+.type-toggle{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:4px;margin-bottom:16px}
+.type-btn{flex:1;padding:10px;border:none;border-radius:9px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;color:var(--text3);background:transparent}
+.type-btn.active-income{background:var(--income);color:#fff}
+.type-btn.active-expense{background:var(--expense);color:#fff}
+
+/* OWNER TOGGLE */
+.owner-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.owner-btn{padding:12px;border:2px solid var(--border);border-radius:12px;background:var(--surface2);cursor:pointer;text-align:center;transition:all .15s;font-family:inherit;font-weight:600;font-size:14px;color:var(--text2)}
+.owner-btn.active-wife{border-color:var(--wife);background:var(--wife-dim);color:var(--wife)}
+.owner-btn.active-husband{border-color:var(--husband);background:var(--husband-dim);color:var(--husband)}
+
+/* TRANSACTION ITEM */
+.tx-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all .15s}
+.tx-item:hover{border-color:var(--primary);box-shadow:0 2px 12px rgba(13,204,156,.1)}
+.tx-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.tx-info{flex:1;min-width:0}
+.tx-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-meta{font-size:12px;color:var(--text3);margin-top:1px}
+.tx-amount{font-weight:800;font-size:15px;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.tx-amount.income{color:var(--income)}
+.tx-amount.expense{color:var(--expense)}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat-card{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px;box-shadow:var(--shadow)}
+.stat-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-1px}
+.stat-change{font-size:12px;font-weight:600;margin-top:4px;display:flex;align-items:center;gap:3px}
+
+/* PROGRESS BAR */
+.progress-wrap{background:var(--surface2);border-radius:999px;height:6px;overflow:hidden}
+.progress-bar{height:100%;border-radius:999px;transition:width .5s ease}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--text2)}
+.section-link{font-size:13px;font-weight:700;color:var(--primary);cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;animation:fadeIn .15s}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:90dvh;display:flex;flex-direction:column;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:18px;font-weight:800}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-drag{width:40px;height:4px;border-radius:2px;background:var(--border);margin:12px auto 0}
+.modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* CHART */
+.chart-donut{position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.chart-center-text{position:absolute;text-align:center}
+
+/* CATEGORY CHIPS */
+.cat-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.cat-chip{padding:8px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface2);font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .15s;font-family:inherit}
+.cat-chip.selected{border-color:var(--primary);background:var(--primary-dim);color:var(--primary-dark)}
+
+/* TABS */
+.tabs{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:2px;margin-bottom:16px}
+.tab-btn{flex:1;padding:9px 4px;border:none;border-radius:9px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;color:var(--text3);background:transparent}
+.tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* PERSON FILTER */
+.person-filter{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
+.person-filter::-webkit-scrollbar{display:none}
+.person-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;color:var(--text2)}
+.person-chip.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary-dark)}
+.avatar{width:24px;height:24px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.avatar-wife{background:var(--wife)}
+.avatar-husband{background:var(--husband)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty-state .icon{font-size:48px;margin-bottom:16px;opacity:.5}
+.empty-state h3{font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px}
+.empty-state p{font-size:14px}
+
+/* SETUP SCREEN */
+.setup-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg)}
+.setup-logo{width:80px;height:80px;background:var(--primary);border-radius:24px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:40px}
+.setup-screen h1{font-size:28px;font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:8px}
+.setup-screen p{color:var(--text2);text-align:center;margin-bottom:32px;font-size:15px}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:12px 0;color:var(--text3);font-size:12px;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* SUMMARY BANNER */
+.summary-banner{background:linear-gradient(135deg,var(--primary-dark),var(--primary));border-radius:var(--radius);padding:24px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden}
+.summary-banner::before{content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.1)}
+.summary-banner::after{content:'';position:absolute;right:20px;bottom:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.06)}
+
+/* ALERT */
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.alert-warning{background:var(--warning-dim);color:var(--warning)}
+.alert-success{background:var(--income-dim);color:var(--income)}
+.alert-danger{background:var(--expense-dim);color:var(--expense)}
+
+/* BUDGET BAR */
+.budget-item{margin-bottom:16px}
+.budget-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.budget-name{font-size:14px;font-weight:700}
+.budget-nums{font-size:12px;color:var(--text2)}
+
+/* YEAR MONTH PICKER */
+.period-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 16px}
+.period-label{font-size:15px;font-weight:800}
+.period-btn{width:32px;height:32px;border:none;background:var(--surface2);border-radius:8px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.period-btn:hover{background:var(--primary-dim);color:var(--primary)}
+
+/* THEME TOGGLE */
+.theme-toggle-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+
+/* IMPORT/EXPORT */
+.backup-option{display:flex;align-items:center;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;cursor:pointer;transition:all .15s}
+.backup-option:hover{border-color:var(--primary)}
+.backup-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+
+/* LIST GROUP */
+.list-group-header{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:8px 0 6px;margin-top:8px}
+
+/* NOTIFICATION DOT */
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);position:absolute;top:8px;right:8px}
+
+/* SHARE INDICATOR */
+.share-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--primary-dim);color:var(--primary-dark)}
+
+/* RESPONSIVE */
+@media(min-width:431px){
+  #app{border-left:1px solid var(--border);border-right:1px solid var(--border);box-shadow:0 0 40px rgba(0,0,0,.1)}
+}
+
+/* GOOGLE LOGIN SCREEN */
+.login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg);position:relative;overflow:hidden}
+.login-screen::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.15),transparent 70%);pointer-events:none}
+.login-screen::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.1),transparent 70%);pointer-events:none}
+.login-logo{width:88px;height:88px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:44px;box-shadow:0 12px 40px rgba(13,204,156,.4);position:relative;z-index:1}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px 20px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
+.google-btn:hover{border-color:#4285f4;box-shadow:0 4px 20px rgba(66,133,244,.2);transform:translateY(-1px)}
+.google-btn:active{transform:translateY(0)}
+.google-btn img{width:22px;height:22px}
+.google-btn.loading{opacity:.7;cursor:not-allowed}
+.divider-text{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:12px;font-weight:700}
+.divider-text::before,.divider-text::after{content:'';flex:1;height:1px;background:var(--border)}
+.skip-btn{background:transparent;border:none;color:var(--text3);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:3px}
+
+/* FAB BUTTON - Center bottom nav */
+.fab-btn{width:56px;height:56px;border-radius:999px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(13,204,156,.5);transition:all .15s;position:relative;top:-8px;flex-shrink:0}
+.fab-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(13,204,156,.6)}
+.fab-btn:active{transform:scale(0.94)}
+.fab-btn .material-symbols-rounded{font-size:28px;font-variation-settings:'FILL' 1,'wght' 600,'GRAD' 0,'opsz' 24}
+
+/* USER AVATAR IN HEADER */
+.user-avatar-btn{width:36px;height:36px;border-radius:999px;border:2px solid var(--primary);overflow:hidden;cursor:pointer;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-avatar-btn img{width:100%;height:100%;object-fit:cover}
+
+/* AUTH STATUS BADGE */
+.auth-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.auth-badge-google{background:#e8f0fe;color:#1a73e8}
+.auth-badge-anon{background:var(--surface2);color:var(--text3)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="screen-login" class="login-screen" style="display:none">
+  <div style="position:relative;z-index:1;width:100%;max-width:360px;text-align:center">
+    <div class="login-logo">💰</div>
+    <h1 style="font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:8px">Ví Gia Đình</h1>
+    <p style="color:var(--text2);font-size:15px;margin-bottom:40px;line-height:1.6">Quản lý chi tiêu thông minh<br/>dành cho vợ chồng</p>
+
+    <!-- Google Sign In -->
+    <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
+      <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+      Đăng nhập bằng Google
+    </button>
+
+    <div id="google-signin-error" class="alert alert-danger" style="display:none;margin-top:12px;text-align:left"></div>
+
+    <div class="divider-text" style="margin:20px 0">hoặc</div>
+
+    <button class="skip-btn" onclick="skipLogin()">Dùng không cần đăng nhập →</button>
+
+    <div style="margin-top:32px;padding:16px;background:var(--surface);border-radius:14px;border:1px solid var(--border);text-align:left">
+      <div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Lợi ích khi đăng nhập Google</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Đồng bộ thời gian thực với Firebase</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Bảo mật dữ liệu theo từng gia đình</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Khôi phục dữ liệu khi đổi điện thoại</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Không cần nhập config thủ công</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:11px;color:var(--text3)">Dữ liệu được mã hóa và bảo mật bởi Firebase</div>
+  </div>
+</div>
+
+<!-- ===== SETUP SCREEN ===== -->
+<div id="screen-setup" class="setup-screen" style="display:none">
+  <div class="setup-logo">💰</div>
+  <h1>Ví Gia Đình</h1>
+  <p>Thiết lập thông tin ban đầu để bắt đầu quản lý chi tiêu cùng nhau</p>
+  <div style="width:100%;max-width:360px">
+    <!-- Google user info (shown if logged in) -->
+    <div id="setup-google-info" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:12px">
+      <img id="setup-google-avatar" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary)" src="" alt=""/>
+      <div>
+        <div id="setup-google-name" style="font-weight:700;font-size:14px"></div>
+        <div id="setup-google-email" style="font-size:12px;color:var(--text3)"></div>
+      </div>
+      <span class="auth-badge auth-badge-google" style="margin-left:auto">Google ✓</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tên của bạn (Chồng / Vợ)</label>
+      <input id="setup-name-husband" class="form-control" placeholder="VD: Nguyễn Văn A" maxlength="30"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tên người bạn đời</label>
+      <input id="setup-name-wife" class="form-control" placeholder="VD: Nguyễn Thị B" maxlength="30"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Bạn đang đăng nhập với tư cách</label>
+      <div class="owner-toggle" id="setup-role">
+        <button class="owner-btn active-husband" data-role="husband" onclick="selectSetupRole('husband')">👨 Chồng</button>
+        <button class="owner-btn" data-role="wife" onclick="selectSetupRole('wife')">👩 Vợ</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ngân sách tháng (₫)</label>
+      <div class="amount-input-wrap">
+        <input id="setup-budget" class="form-control amount-input" type="number" placeholder="0" min="0"/>
+        <span class="currency">₫</span>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="setupComplete()" style="margin-top:8px">
+      <span class="material-symbols-rounded">check_circle</span> Bắt đầu sử dụng
+    </button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="main-app" style="display:none;flex-direction:column;flex:1;height:100dvh">
+
+  <!-- SCREEN: HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="header">
+      <div>
+        <div id="home-greeting" style="font-size:12px;color:var(--text3);font-weight:600"></div>
+        <h1 id="home-title">Trang Chủ</h1>
+      </div>
+      <button class="theme-toggle-btn" onclick="toggleTheme()">
+        <span class="material-symbols-rounded" id="theme-icon">dark_mode</span>
+      </button>
+      <button class="user-avatar-btn" onclick="switchTab('settings')" id="header-avatar-btn" title="Tài khoản">
+        <span id="header-avatar-text" style="font-size:14px;font-weight:800;color:var(--primary-dark)">?</span>
+      </button>
+    </div>
+
+    <!-- PWA Install Banner (compact, dismissable) -->
+    <div id="pwa-banner" style="display:none;margin:12px 20px 0;background:linear-gradient(135deg,#0dcc9c,#089970);border-radius:14px;padding:14px 16px;animation:fadeIn .3s ease">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:28px;flex-shrink:0">💰</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:1px">Cài đặt Ví Gia Đình</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8)">Dùng offline như app thật!</div>
+        </div>
+        <button onclick="triggerPWAInstall()" style="background:rgba(255,255,255,.25);border:none;padding:8px 14px;border-radius:8px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.25)'">Cài ngay</button>
+        <button onclick="dismissPWABanner()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;border-radius:6px" title="Đóng">
+          <span class="material-symbols-rounded" style="font-size:18px;color:rgba(255,255,255,.7)">close</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scroll-content" style="padding-bottom:24px">
+      <!-- Summary Banner -->
+      <div class="summary-banner" id="home-banner">
+        <div style="font-size:12px;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px" id="banner-month"></div>
+        <div style="font-size:13px;opacity:.85;margin-bottom:2px">Tổng chi tiêu tháng này</div>
+        <div style="font-size:36px;font-weight:900;letter-spacing:-2px;font-family:'JetBrains Mono',monospace" id="banner-expense">0 ₫</div>
+        <div style="display:flex;gap:16px;margin-top:16px">
+          <div>
+            <div style="font-size:11px;opacity:.7;font-weight:600;text-transform:uppercase">Thu nhập</div>
+            <div style="font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace" id="banner-income">0 ₫</div>
+          </div>
+          <div>
+            <div style="font-size:11px;opacity:.7;font-weight:600;text-transform:uppercase">Còn lại</div>
+            <div style="font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace" id="banner-balance">0 ₫</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Progress -->
+      <div class="card" id="home-budget-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:700">Ngân sách tháng</div>
+          <span id="budget-pct-label" class="badge badge-income">0%</span>
+        </div>
+        <div class="progress-wrap" style="margin-bottom:8px">
+          <div class="progress-bar" id="budget-progress-bar" style="width:0%;background:var(--primary)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);font-weight:600">
+          <span id="budget-spent-label">Đã chi: 0 ₫</span>
+          <span id="budget-total-label">Hạn mức: 0 ₫</span>
+        </div>
+      </div>
+
+      <!-- Couple Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">👨 <span id="husband-name-label">Chồng</span></div>
+          <div class="stat-value" id="home-husband-total">0 ₫</div>
+          <div class="stat-change" style="color:var(--husband)"><span class="material-symbols-rounded" style="font-size:14px">person</span><span id="husband-tx-count">0 giao dịch</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">👩 <span id="wife-name-label">Vợ</span></div>
+          <div class="stat-value" id="home-wife-total">0 ₫</div>
+          <div class="stat-change" style="color:var(--wife)"><span class="material-symbols-rounded" style="font-size:14px">person</span><span id="wife-tx-count">0 giao dịch</span></div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="section-header">
+        <span class="section-title">Giao dịch gần đây</span>
+        <button class="section-link" onclick="switchTab('transactions')">Xem tất cả</button>
+      </div>
+      <div id="home-recent-list"></div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-home"></div>
+  </div>
+
+  <!-- SCREEN: TRANSACTIONS -->
+  <div id="screen-transactions" class="screen">
+    <div class="header">
+      <h1>Giao Dịch</h1>
+      <button class="header-btn" onclick="openSearchModal()">
+        <span class="material-symbols-rounded">search</span>
+      </button>
+    </div>
+    <div style="padding:12px 20px 0;background:var(--surface);border-bottom:1px solid var(--border)">
+      <div class="person-filter" id="tx-person-filter">
+        <button class="person-chip active" data-filter="all" onclick="filterTx('all',this)">🏠 Tất cả</button>
+        <button class="person-chip" data-filter="husband" onclick="filterTx('husband',this)"><span class="avatar avatar-husband">H</span><span id="filter-husband-name">Chồng</span></button>
+        <button class="person-chip" data-filter="wife" onclick="filterTx('wife',this)"><span class="avatar avatar-wife">V</span><span id="filter-wife-name">Vợ</span></button>
+        <button class="person-chip" data-filter="income" onclick="filterTx('income',this)">💚 Thu nhập</button>
+        <button class="person-chip" data-filter="expense" onclick="filterTx('expense',this)">❤️ Chi tiêu</button>
+      </div>
+    </div>
+    <div class="scroll-content" style="padding-bottom:24px" id="tx-list-container">
+      <div class="period-nav" style="margin-top:4px">
+        <button class="period-btn" onclick="changeTxPeriod(-1)"><span class="material-symbols-rounded">chevron_left</span></button>
+        <span class="period-label" id="tx-period-label">Tháng 3/2026</span>
+        <button class="period-btn" onclick="changeTxPeriod(1)"><span class="material-symbols-rounded">chevron_right</span></button>
+      </div>
+      <div id="tx-list"></div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-transactions"></div>
+  </div>
+
+  <!-- SCREEN: BUDGET -->
+  <div id="screen-budget" class="screen">
+    <div class="header">
+      <h1>Ngân Sách</h1>
+      <button class="header-btn" onclick="openModal('modal-edit-budget')">
+        <span class="material-symbols-rounded">edit</span>
+      </button>
+    </div>
+    <div class="scroll-content" style="padding-bottom:24px">
+      <div class="period-nav">
+        <button class="period-btn" onclick="changeBudgetPeriod(-1)"><span class="material-symbols-rounded">chevron_left</span></button>
+        <span class="period-label" id="budget-period-label">Tháng 3/2026</span>
+        <button class="period-btn" onclick="changeBudgetPeriod(1)"><span class="material-symbols-rounded">chevron_right</span></button>
+      </div>
+
+      <div class="card" style="padding:24px">
+        <div style="font-size:13px;color:var(--text2);font-weight:600;margin-bottom:6px">Tổng chi tiêu / Ngân sách</div>
+        <div style="font-size:32px;font-weight:900;font-family:'JetBrains Mono',monospace;letter-spacing:-1.5px;margin-bottom:4px" id="budget-total-spent">0 ₫</div>
+        <div style="color:var(--text3);font-size:13px;margin-bottom:16px">Hạn mức: <b id="budget-limit-display">0 ₫</b></div>
+        <div class="progress-wrap" style="height:10px;margin-bottom:8px">
+          <div class="progress-bar" id="budget-main-bar" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700">
+          <span id="budget-main-used">0%</span>
+          <span id="budget-main-remaining" style="color:var(--text3)">Còn lại: 0 ₫</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-title">Chi tiêu theo danh mục</span>
+        <button class="section-link" onclick="openModal('modal-manage-cats')">Quản lý</button>
+      </div>
+      <div id="budget-cats-list"></div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-budget"></div>
+  </div>
+
+  <!-- SCREEN: REPORTS -->
+  <div id="screen-reports" class="screen">
+    <div class="header">
+      <h1>Báo Cáo</h1>
+    </div>
+    <div class="scroll-content" style="padding-bottom:24px">
+      <div class="tabs" id="report-tabs">
+        <button class="tab-btn active" onclick="switchReportTab('month',this)">Tháng</button>
+        <button class="tab-btn" onclick="switchReportTab('year',this)">Năm</button>
+        <button class="tab-btn" onclick="switchReportTab('all',this)">Tổng kết</button>
+      </div>
+
+      <div id="report-month-view">
+        <div class="period-nav">
+          <button class="period-btn" onclick="changeReportPeriod(-1)"><span class="material-symbols-rounded">chevron_left</span></button>
+          <span class="period-label" id="report-period-label">Tháng 3/2026</span>
+          <button class="period-btn" onclick="changeReportPeriod(1)"><span class="material-symbols-rounded">chevron_right</span></button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Thu nhập</div>
+            <div class="stat-value" id="report-income" style="color:var(--income)">0 ₫</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Chi tiêu</div>
+            <div class="stat-value" id="report-expense" style="color:var(--expense)">0 ₫</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-header" style="margin-bottom:16px"><span class="section-title">Phân bổ chi tiêu</span></div>
+          <div style="display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+            <canvas id="donut-chart" width="200" height="200"></canvas>
+          </div>
+          <div id="donut-legend"></div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:14px">Chi tiêu theo người</div>
+          <div id="report-by-person"></div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:14px">Xu hướng tuần</div>
+          <canvas id="bar-chart" width="360" height="140"></canvas>
+        </div>
+      </div>
+
+      <div id="report-year-view" style="display:none">
+        <div class="period-nav">
+          <button class="period-btn" onclick="changeReportYear(-1)"><span class="material-symbols-rounded">chevron_left</span></button>
+          <span class="period-label" id="report-year-label">2026</span>
+          <button class="period-btn" onclick="changeReportYear(1)"><span class="material-symbols-rounded">chevron_right</span></button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Thu nhập năm</div>
+            <div class="stat-value" id="year-income" style="color:var(--income)">0 ₫</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Chi tiêu năm</div>
+            <div class="stat-value" id="year-expense" style="color:var(--expense)">0 ₫</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:14px">Theo tháng trong năm</div>
+          <canvas id="year-bar-chart" width="360" height="180"></canvas>
+        </div>
+        <div id="year-months-list"></div>
+      </div>
+
+      <div id="report-all-view" style="display:none">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Tổng giao dịch</div>
+            <div class="stat-value" id="all-tx-count" style="font-size:26px">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Số tháng ghi</div>
+            <div class="stat-value" id="all-months-count" style="font-size:26px">0</div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Tổng thu nhập</div>
+            <div class="stat-value" id="all-income" style="color:var(--income);font-size:16px">0 ₫</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Tổng chi tiêu</div>
+            <div class="stat-value" id="all-expense" style="color:var(--expense);font-size:16px">0 ₫</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:14px">Tổng hợp theo năm</div>
+          <div id="all-years-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-title" style="margin-bottom:12px">Top danh mục chi nhiều nhất</div>
+          <div id="all-top-cats"></div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-reports"></div>
+  </div>
+
+  <!-- SCREEN: SETTINGS -->
+  <div id="screen-settings" class="screen">
+    <div class="header">
+      <h1>Cài Đặt</h1>
+    </div>
+    <div class="scroll-content" style="padding-bottom:24px">
+      <!-- Google Account -->
+      <div class="card" id="settings-google-card">
+        <div style="font-size:13px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">Tài khoản Google</div>
+        <div id="settings-google-signed-in" style="display:none">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <div id="settings-google-avatar-wrap" style="width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid var(--primary);flex-shrink:0;background:var(--primary-dim);display:flex;align-items:center;justify-content:center"></div>
+            <div style="flex:1;min-width:0">
+              <div id="settings-google-name" style="font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+              <div id="settings-google-email" style="font-size:12px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+            </div>
+            <span class="auth-badge auth-badge-google">Google ✓</span>
+          </div>
+          <button class="btn btn-outline btn-full btn-sm" onclick="signOut()" style="color:var(--expense);border-color:var(--expense)">
+            <span class="material-symbols-rounded" style="font-size:16px">logout</span> Đăng xuất
+          </button>
+        </div>
+        <div id="settings-google-signed-out">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Đăng nhập Google để đồng bộ Firebase dễ dàng hơn và bảo mật hơn.</p>
+          <button class="btn btn-full google-btn" onclick="signInWithGoogle()" style="padding:10px 16px">
+            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Đăng nhập Google
+          </button>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Thông tin tài khoản</div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div id="settings-avatar" class="avatar avatar-husband" style="width:56px;height:56px;font-size:22px"></div>
+          <div>
+            <div id="settings-user-name" style="font-size:18px;font-weight:800"></div>
+            <div id="settings-user-role" style="font-size:13px;color:var(--text3);font-weight:600;margin-top:2px"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tên của bạn</label>
+          <input id="settings-name-self" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tên người bạn đời</label>
+          <input id="settings-name-partner" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ngân sách hàng tháng (₫)</label>
+          <div class="amount-input-wrap">
+            <input id="settings-budget" class="form-control" type="number" min="0"/>
+            <span class="currency">₫</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="saveSettings()">
+          <span class="material-symbols-rounded">save</span> Lưu thay đổi
+        </button>
+      </div>
+
+      <!-- Categories -->
+      <div class="card">
+        <div class="section-header">
+          <span class="section-title">Danh mục</span>
+          <button class="section-link" onclick="openModal('modal-manage-cats')">Quản lý</button>
+        </div>
+        <div id="settings-cats-preview"></div>
+      </div>
+
+      <!-- Firebase Sync -->
+      <div class="card" id="firebase-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="width:44px;height:44px;border-radius:12px;background:#fff3e0;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <img src="https://www.gstatic.com/devrel-devsite/prod/v45f61cf7d8e64d3a9a7e02ccb3182a742ab3e2dcddbda6a3d31c1052a35a3ba9/firebase/images/touchicon-180.png" style="width:26px;height:26px" onerror="this.parentElement.textContent='🔥'"/>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:800;font-size:15px">Đồng bộ Firebase</div>
+            <div id="firebase-status-label" style="font-size:12px;color:var(--text3);margin-top:1px">Chưa kết nối</div>
+          </div>
+          <div id="firebase-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--border);flex-shrink:0"></div>
+        </div>
+        <div id="firebase-connected-ui" style="display:none">
+          <div style="background:var(--income-dim);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+            <span class="material-symbols-rounded fill" style="color:var(--income)">cloud_done</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--income)">Đang đồng bộ thời gian thực ✅</div>
+              <div id="firebase-family-id-display" style="font-size:11px;color:var(--text3);margin-top:2px"></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <button class="btn btn-outline btn-sm" onclick="forceSyncFromCloud()">
+              <span class="material-symbols-rounded" style="font-size:16px">cloud_download</span> Tải từ Cloud
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="disconnectFirebase()">
+              <span class="material-symbols-rounded" style="font-size:16px">cloud_off</span> Ngắt kết nối
+            </button>
+          </div>
+
+          <!-- Members list -->
+          <div style="background:var(--surface2);border-radius:12px;padding:12px;margin-bottom:10px">
+            <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Thành viên đã kết nối</div>
+            <div id="firebase-members-list">
+              <div style="font-size:12px;color:var(--text3);font-style:italic">Đang tải...</div>
+            </div>
+            <button class="btn btn-outline btn-full btn-sm" onclick="loadFamilyMembers()" style="margin-top:10px">
+              <span class="material-symbols-rounded" style="font-size:15px">refresh</span> Làm mới danh sách
+            </button>
+          </div>
+
+          <button class="btn btn-outline btn-full btn-sm" onclick="showSecurityRulesGuide()" style="border-color:var(--warning);color:var(--warning)">
+            <span class="material-symbols-rounded" style="font-size:16px">security</span> Xem / Cập nhật Security Rules
+          </button>
+        </div>
+        <div id="firebase-setup-ui">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Kết nối Firebase để đồng bộ giao dịch <b>thời gian thực</b> giữa vợ và chồng — thay đổi hiện ngay trên cả hai điện thoại.</p>
+          <button class="btn btn-primary btn-full" onclick="openModal('modal-firebase-setup')">
+            <span class="material-symbols-rounded">bolt</span> Thiết lập Firebase ngay
+          </button>
+        </div>
+      </div>
+
+      <!-- Backup -->
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Sao lưu & Phục hồi</div>
+        <div class="backup-option" onclick="exportData()">
+          <div class="backup-icon" style="background:var(--income-dim);color:var(--income)"><span class="material-symbols-rounded fill">download</span></div>
+          <div>
+            <div style="font-weight:700;font-size:14px">Xuất dữ liệu (.json)</div>
+            <div style="font-size:12px;color:var(--text3)">Tải về máy tính để sao lưu</div>
+          </div>
+        </div>
+        <div class="backup-option" onclick="document.getElementById('import-file').click()">
+          <div class="backup-icon" style="background:var(--husband-dim);color:var(--husband)"><span class="material-symbols-rounded fill">upload</span></div>
+          <div>
+            <div style="font-weight:700;font-size:14px">Nhập dữ liệu (.json)</div>
+            <div style="font-size:12px;color:var(--text3)">Phục hồi từ file sao lưu</div>
+          </div>
+        </div>
+        <input id="import-file" type="file" accept=".json" style="display:none" onchange="importData(event)"/>
+        <div class="backup-option" onclick="exportCSV()">
+          <div class="backup-icon" style="background:var(--warning-dim);color:var(--warning)"><span class="material-symbols-rounded fill">table_chart</span></div>
+          <div>
+            <div style="font-weight:700;font-size:14px">Xuất CSV (Excel)</div>
+            <div style="font-size:12px;color:var(--text3)">Mở bằng Excel hoặc Sheets</div>
+          </div>
+        </div>
+        <div class="backup-option" onclick="openModal('modal-firebase-setup')" style="border:1.5px dashed var(--border)">
+          <div class="backup-icon" style="background:#fff3e0;color:#f57c00"><span style="font-size:22px">🔥</span></div>
+          <div>
+            <div style="font-weight:700;font-size:14px">Firebase – Đồng bộ thời gian thực</div>
+            <div style="font-size:12px;color:var(--text3)">Xem phần Firebase bên dưới để thiết lập</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share -->
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Chia sẻ với người bạn đời</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Xuất dữ liệu để chia sẻ giao dịch với <b id="partner-name-share"></b>. Họ có thể nhập file này vào ứng dụng của họ.</p>
+        <button class="btn btn-outline btn-full" onclick="shareWithPartner()">
+          <span class="material-symbols-rounded">share</span> Tạo file chia sẻ
+        </button>
+      </div>
+
+      <!-- PWA Install -->
+      <div class="card" id="pwa-install-card" style="display:none;border-color:var(--primary);background:linear-gradient(135deg,var(--primary-dim),var(--surface))">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          <div style="width:52px;height:52px;background:var(--primary);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;box-shadow:0 4px 16px rgba(13,204,156,.35)">💰</div>
+          <div>
+            <div style="font-size:16px;font-weight:800;letter-spacing:-.3px">Cài đặt ứng dụng</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Thêm vào màn hình chính</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6">Cài đặt <b>Ví Gia Đình</b> như ứng dụng thật — truy cập nhanh, dùng offline, không cần trình duyệt.</p>
+        <div style="display:grid;gap:8px">
+          <button class="btn btn-primary btn-full" id="pwa-install-btn" onclick="triggerPWAInstall()">
+            <span class="material-symbols-rounded fill">install_mobile</span> Cài đặt ngay
+          </button>
+          <div id="pwa-ios-hint" style="display:none;background:var(--surface2);border-radius:10px;padding:12px;font-size:12px;color:var(--text2);line-height:1.7">
+            <b style="color:var(--text);display:block;margin-bottom:6px">📱 Cách cài trên iPhone/iPad:</b>
+            1. Nhấn nút <b>Chia sẻ</b> <span style="background:var(--border);padding:1px 6px;border-radius:4px">⎙</span> ở thanh Safari<br/>
+            2. Chọn <b>"Thêm vào Màn hình chính"</b><br/>
+            3. Nhấn <b>Thêm</b> để xác nhận
+          </div>
+          <div id="pwa-android-hint" style="display:none;background:var(--surface2);border-radius:10px;padding:12px;font-size:12px;color:var(--text2);line-height:1.7">
+            <b style="color:var(--text);display:block;margin-bottom:6px">🤖 Cách cài trên Android:</b>
+            1. Nhấn menu <b>⋮</b> góc trên bên phải Chrome<br/>
+            2. Chọn <b>"Thêm vào màn hình chính"</b><br/>
+            3. Nhấn <b>Thêm</b> để xác nhận
+          </div>
+        </div>
+      </div>
+
+      <!-- PWA Installed Badge -->
+      <div class="card" id="pwa-installed-card" style="display:none;border-color:var(--income)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:44px;height:44px;background:var(--income-dim);border-radius:12px;display:flex;align-items:center;justify-content:center">
+            <span class="material-symbols-rounded fill" style="color:var(--income)">check_circle</span>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:14px">Đã cài đặt ứng dụng ✅</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Ví Gia Đình đang chạy như ứng dụng thật</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="card" style="border-color:var(--expense)">
+        <div class="section-title" style="margin-bottom:14px;color:var(--expense)">Vùng nguy hiểm</div>
+        <button class="btn btn-danger btn-full" onclick="confirmClearData()">
+          <span class="material-symbols-rounded">delete_forever</span> Xóa toàn bộ dữ liệu
+        </button>
+      </div>
+
+      <div style="text-align:center;font-size:12px;color:var(--text3);padding:8px 0 32px">
+        Ví Gia Đình v1.1 PWA • Dữ liệu lưu trên máy bạn
+      </div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-settings"></div>
+  </div>
+
+</div><!-- /main-app -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add/Edit Transaction -->
+<div class="modal-overlay" id="modal-add-tx">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="add-tx-title">Thêm Giao Dịch</div>
+      <button class="modal-close" onclick="closeModal('modal-add-tx')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div class="type-toggle">
+        <button class="type-btn active-expense" id="type-btn-expense" onclick="setTxType('expense')">💸 Chi tiêu</button>
+        <button class="type-btn" id="type-btn-income" onclick="setTxType('income')">💰 Thu nhập</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Số tiền</label>
+        <div class="amount-input-wrap">
+          <input id="tx-amount" class="form-control amount-input" type="number" placeholder="0" min="0" oninput="formatTxAmount()"/>
+          <span class="currency">₫</span>
+        </div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px;font-family:'JetBrains Mono',monospace" id="tx-amount-display"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mô tả</label>
+        <input id="tx-note" class="form-control" placeholder="VD: Tiền thuê nhà tháng 3" maxlength="100"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Danh mục</label>
+        <div class="cat-chips" id="tx-cat-chips"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Người chi / nhận</label>
+        <div class="owner-toggle" id="tx-owner-toggle">
+          <button class="owner-btn" id="owner-btn-husband" onclick="setTxOwner('husband')"></button>
+          <button class="owner-btn" id="owner-btn-wife" onclick="setTxOwner('wife')"></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ngày</label>
+        <input id="tx-date" class="form-control" type="date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Chia sẻ giao dịch này</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--surface2);border-radius:10px;border:1.5px solid var(--border)">
+          <input type="checkbox" id="tx-shared" style="width:18px;height:18px;cursor:pointer"/>
+          <span style="font-size:14px;font-weight:600">Hiện với cả hai người</span>
+        </label>
+      </div>
+      <input type="hidden" id="tx-edit-id"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn btn-outline" onclick="closeModal('modal-add-tx')">Hủy</button>
+        <button class="btn btn-primary" onclick="saveTx()"><span class="material-symbols-rounded">save</span> Lưu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Budget -->
+<div class="modal-overlay" id="modal-edit-budget">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">Chỉnh Sửa Ngân Sách</div>
+      <button class="modal-close" onclick="closeModal('modal-edit-budget')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Ngân sách hàng tháng (₫)</label>
+        <div class="amount-input-wrap">
+          <input id="budget-edit-amount" class="form-control amount-input" type="number" min="0"/>
+          <span class="currency">₫</span>
+        </div>
+      </div>
+      <div class="section-title" style="margin-bottom:12px">Ngân sách theo danh mục</div>
+      <div id="budget-cat-inputs"></div>
+      <button class="btn btn-primary btn-full" onclick="saveBudget()">
+        <span class="material-symbols-rounded">save</span> Lưu ngân sách
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Categories -->
+<div class="modal-overlay" id="modal-manage-cats">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">Quản Lý Danh Mục</div>
+      <button class="modal-close" onclick="closeModal('modal-manage-cats')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchCatTab('expense',this)">Chi tiêu</button>
+        <button class="tab-btn" onclick="switchCatTab('income',this)">Thu nhập</button>
+      </div>
+      <div id="cats-expense-list"></div>
+      <div id="cats-income-list" style="display:none"></div>
+      <div class="divider">Thêm danh mục mới</div>
+      <div style="display:flex;gap:10px">
+        <input id="new-cat-name" class="form-control" placeholder="Tên danh mục" maxlength="30" style="flex:1"/>
+        <input id="new-cat-emoji" class="form-control" placeholder="🎯" maxlength="4" style="width:64px;text-align:center;font-size:20px"/>
+        <button class="btn btn-primary btn-sm" onclick="addCategory()">Thêm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction Detail -->
+<div class="modal-overlay" id="modal-tx-detail">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">Chi Tiết Giao Dịch</div>
+      <button class="modal-close" onclick="closeModal('modal-tx-detail')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body" id="tx-detail-content"></div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="modal-overlay" id="modal-search">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">Tìm Kiếm</div>
+      <button class="modal-close" onclick="closeModal('modal-search')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body">
+      <input id="search-input" class="form-control" placeholder="Tìm theo tên giao dịch..." oninput="searchTx()" style="margin-bottom:16px"/>
+      <div id="search-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase Setup Modal -->
+<div class="modal-overlay" id="modal-firebase-setup">
+  <div class="modal" style="max-height:95dvh">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">🔥 Thiết Lập Firebase</div>
+      <button class="modal-close" onclick="closeModal('modal-firebase-setup')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body" style="padding-bottom:32px">
+
+      <!-- Step tabs -->
+      <div id="firebase-steps">
+
+        <!-- STEP 0: Intro -->
+        <div id="fb-step-0">
+          <div style="text-align:center;padding:8px 0 20px">
+            <div style="font-size:56px;margin-bottom:12px">🔥</div>
+            <div style="font-size:18px;font-weight:900;margin-bottom:8px">Firebase Realtime Sync</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.7">Đồng bộ giao dịch <b>tức thì</b> giữa điện thoại của bạn và người bạn đời. Miễn phí hoàn toàn.</div>
+          </div>
+          <div style="display:grid;gap:10px;margin-bottom:24px">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
+              <span style="font-size:24px">⚡</span>
+              <div><b style="font-size:13px">Thời gian thực</b><div style="font-size:12px;color:var(--text3)">Thay đổi hiện ngay trong vài giây</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
+              <span style="font-size:24px">🆓</span>
+              <div><b style="font-size:13px">Miễn phí</b><div style="font-size:12px;color:var(--text3)">Firebase free tier: 1GB lưu trữ, 10GB/tháng</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
+              <span style="font-size:24px">📱</span>
+              <div><b style="font-size:13px">Mọi thiết bị</b><div style="font-size:12px;color:var(--text3)">Điện thoại, máy tính, iPad đều đồng bộ</div></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="fbGoStep(1)">
+            Bắt đầu thiết lập <span class="material-symbols-rounded">arrow_forward</span>
+          </button>
+          <div style="margin-top:10px">
+            <div style="font-size:12px;color:var(--text3);text-align:center">Mất khoảng 5-10 phút · Cần tài khoản Google</div>
+          </div>
+        </div>
+
+        <!-- STEP 1: Create Firebase project -->
+        <div id="fb-step-1" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div style="font-size:16px;font-weight:800">Tạo Firebase Project</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+            <div class="alert alert-warning" style="margin:0">⏱️ Bước này mất khoảng 2-3 phút</div>
+            <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2)">
+              <b style="color:var(--text);display:block;margin-bottom:6px">Làm theo từng bước:</b>
+              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Nhấn nút <b>"Mở Firebase Console"</b> bên dưới</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>Đăng nhập bằng <b>tài khoản Google</b></span></div>
+              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Nhấn <b>"Add project"</b> (hoặc "Tạo dự án")</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Tên project: gõ <code style="background:var(--border);padding:1px 6px;border-radius:4px">vi-gia-dinh</code></span></div>
+              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">5.</span><span>Nhấn <b>Continue</b> → tắt Google Analytics → <b>Create project</b></span></div>
+              <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">6.</span><span>Chờ tạo xong → nhấn <b>Continue</b></span></div>
+            </div>
+          </div>
+          <a href="https://console.firebase.google.com" target="_blank" class="btn btn-primary btn-full" style="text-decoration:none;margin-bottom:10px">
+            <span class="material-symbols-rounded">open_in_new</span> Mở Firebase Console
+          </a>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn btn-outline" onclick="fbGoStep(0)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
+            <button class="btn btn-primary" onclick="fbGoStep(2)">Xong, tiếp theo <span class="material-symbols-rounded">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Enable Firestore -->
+        <div id="fb-step-2" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div style="font-size:16px;font-weight:800">Bật Cloud Firestore</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2);margin-bottom:20px">
+            <b style="color:var(--text);display:block;margin-bottom:6px">Trong Firebase Console vừa mở:</b>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Menu trái → chọn <b>"Firestore Database"</b></span></div>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>Nhấn <b>"Create database"</b></span></div>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Chọn vùng: <b>asia-southeast1 (Singapore)</b> → Next</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Chọn <b>"Start in test mode"</b> → Enable</span></div>
+            <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">5.</span><span>Chờ vài giây cho Firestore khởi động</span></div>
+          </div>
+          <div class="alert alert-success" style="margin-bottom:16px"><span class="material-symbols-rounded">info</span> <span>Không cần copy Database URL — Firestore tự cấu hình qua Project ID</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn btn-outline" onclick="fbGoStep(1)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
+            <button class="btn btn-primary" onclick="fbGoStep(3)">Xong, tiếp theo <span class="material-symbols-rounded">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Register Web App & get config -->
+        <div id="fb-step-3" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div style="font-size:16px;font-weight:800">Lấy Firebase Config</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2);margin-bottom:20px">
+            <b style="color:var(--text);display:block;margin-bottom:6px">Đăng ký Web App:</b>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Nhấn biểu tượng <b>&lt;/&gt;</b> (Web) trên trang Project Overview</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>App nickname: <b>vi-gia-dinh-web</b> → Register app</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Bạn sẽ thấy đoạn code <b>firebaseConfig</b></span></div>
+            <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Copy các giá trị <b>apiKey</b>, <b>projectId</b>, <b>appId</b> vào bước tiếp theo</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+            <button class="btn btn-outline btn-sm" onclick="fbGoStep(2)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
+            <button class="btn btn-primary btn-sm" onclick="fbGoStep(4)">Tôi có config rồi <span class="material-symbols-rounded">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Enter config -->
+        <div id="fb-step-4" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div style="font-size:16px;font-weight:800">Nhập Thông Tin Kết Nối</div>
+          </div>
+          <div class="alert alert-warning" style="margin-bottom:16px">📋 Copy-paste chính xác từ Firebase Console, tránh gõ tay</div>
+          <div class="form-group">
+            <label class="form-label">API Key</label>
+            <input id="fb-api-key" class="form-control" placeholder="AIzaSy..." style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>apiKey: "..."</code> trong firebaseConfig</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Database URL <span style="font-size:10px;color:var(--text3)">(chỉ cần nếu dùng Realtime DB)</span></label>
+            <input id="fb-db-url" class="form-control" placeholder="Không cần cho Firestore — để trống" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3)"/>
+            <div style="font-size:11px;color:var(--primary-dark);font-weight:700;margin-top:4px">✅ App đã dùng <b>Cloud Firestore</b> — không cần Database URL</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project ID</label>
+            <input id="fb-project-id" class="form-control" placeholder="vi-gia-dinh" style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>projectId: "..."</code></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">App ID</label>
+            <input id="fb-app-id" class="form-control" placeholder="1:123456:web:abc..." style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>appId: "..."</code></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mã gia đình (Family ID)</label>
+            <input id="fb-family-id" class="form-control" placeholder="VD: nguyen-tran-2024" maxlength="40"/>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">Cả hai người dùng phải nhập <b>cùng một mã</b> này. Tự đặt tên dễ nhớ, không dấu, không cách.</div>
+          </div>
+          <div id="fb-connect-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <button class="btn btn-outline" onclick="fbGoStep(3)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
+            <button class="btn btn-primary" id="fb-connect-btn" onclick="connectFirebase()">
+              <span class="material-symbols-rounded">bolt</span> Kết nối!
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Success -->
+        <div id="fb-step-5" style="display:none">
+          <div style="text-align:center;padding:16px 0 24px">
+            <div style="font-size:64px;margin-bottom:12px;animation:pulse 1s ease">🎉</div>
+            <div style="font-size:20px;font-weight:900;color:var(--income);margin-bottom:8px">Kết nối thành công!</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.7">Ứng dụng đang đồng bộ thời gian thực với Firebase. Chia sẻ <b>Mã gia đình</b> cho người bạn đời để cùng dùng chung.</div>
+          </div>
+          <div style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:12px;padding:16px;margin-bottom:20px">
+            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Mã gia đình của bạn</div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div id="fb-success-family-id" style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--primary-dark);flex:1"></div>
+              <button class="btn btn-sm btn-outline" onclick="copyFamilyId()" style="flex-shrink:0">
+                <span class="material-symbols-rounded" style="font-size:16px">content_copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="alert alert-warning" style="margin-bottom:16px">
+            <span class="material-symbols-rounded" style="font-size:18px">info</span>
+            Người bạn đời cũng cần mở app → Cài đặt → Thiết lập Firebase → nhập <b>cùng config</b> và <b>cùng Mã gia đình</b>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="closeModal('modal-firebase-setup')">
+            <span class="material-symbols-rounded">check_circle</span> Hoàn tất
+          </button>
+        </div>
+
+      </div><!-- /firebase-steps -->
+    </div>
+  </div>
+</div>
+
+<!-- Firebase Rules Modal -->
+<div class="modal-overlay" id="modal-firebase-rules">
+  <div class="modal" style="max-height:92dvh">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">🔒 Bảo Mật Firestore</div>
+      <button class="modal-close" onclick="closeModal('modal-firebase-rules')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body" style="padding-bottom:32px">
+
+      <!-- Step guide -->
+      <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;color:var(--text2);line-height:2;margin-bottom:20px">
+        <b style="color:var(--text);display:block;margin-bottom:6px">📋 Các bước thực hiện:</b>
+        <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Vào <b>Firebase Console → Firestore Database → Rules</b></span></div>
+        <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>Xóa toàn bộ nội dung cũ</span></div>
+        <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Dán rules bên dưới vào → nhấn <b>"Publish"</b></span></div>
+      </div>
+
+      <!-- ★ RECOMMENDED: UID-based -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px">★ Bạn chọn</span>
+        <div style="font-size:13px;font-weight:800;color:var(--text)">🛡️ Chỉ đúng UID vợ/chồng</div>
+      </div>
+      <div style="background:#0d1f1c;border-radius:12px;padding:14px;margin-bottom:4px;position:relative;border:1.5px solid var(--primary)">
+        <button onclick="copyRules('rules-uid')" style="position:absolute;top:10px;right:10px;background:var(--primary);border:none;padding:5px 12px;border-radius:6px;color:#fff;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit">Copy</button>
+        <pre id="rules-uid" style="color:#0dcc9c;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;white-space:pre-wrap;margin:0">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /families/{familyId}/{document=**} {
+      // Chỉ UID nằm trong sub-collection "members" mới vào được
+      allow read, write: if request.auth != null
+        && exists(
+            /databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid)
+           );
+    }
+
+    // Cho phép tự ghi UID của mình vào members khi lần đầu kết nối
+    match /families/{familyId}/members/{userId} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read:  if request.auth != null
+        && exists(
+            /databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid)
+           );
+    }
+  }
+}</pre>
+      </div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;padding:0 4px">Chỉ 2 UID bạn cho phép mới truy cập được. App tự ghi UID vào <code>members</code> lần đầu kết nối.</div>
+
+      <!-- UID display card -->
+      <div id="rules-uid-card" style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:12px;padding:14px;margin:12px 0 20px">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">UID của bạn hiện tại</div>
+        <div id="rules-my-uid" style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--primary-dark);word-break:break-all;margin-bottom:8px">Chưa đăng nhập Google</div>
+        <button onclick="copyMyUID()" style="background:var(--primary);border:none;padding:6px 14px;border-radius:8px;color:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;display:flex;align-items:center;gap:6px">
+          <span class="material-symbols-rounded" style="font-size:15px">content_copy</span> Copy UID của tôi
+        </button>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">📌 Chia sẻ UID này cho người bạn đời — họ cần ghi vào <b>Firebase Console → Authentication → Users</b> để xác nhận. Hoặc đơn giản hơn: cả hai cùng kết nối app sẽ tự ghi UID vào <code>members</code>.</div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px">
+        <div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Các lựa chọn khác</div>
+
+        <!-- Option A -->
+        <div style="font-size:12px;font-weight:800;color:var(--text2);margin-bottom:6px">🔐 Chỉ cần đăng nhập Google (ít chặt hơn)</div>
+        <div style="background:#0d1f1c;border-radius:10px;padding:12px;margin-bottom:4px;position:relative">
+          <button onclick="copyRules('rules-a')" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;padding:4px 10px;border-radius:5px;color:#7ab8b0;cursor:pointer;font-size:10px;font-family:inherit">Copy</button>
+          <pre id="rules-a" style="color:#7ab8b0;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;white-space:pre-wrap;margin:0">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /families/{familyId}/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}</pre>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:16px">Bất kỳ ai đăng nhập Google đều đọc được — ít an toàn hơn</div>
+
+        <!-- Option B -->
+        <div style="font-size:12px;font-weight:800;color:var(--text2);margin-bottom:6px">🏠 Không cần đăng nhập (dễ nhất)</div>
+        <div style="background:#0d1f1c;border-radius:10px;padding:12px;margin-bottom:4px;position:relative">
+          <button onclick="copyRules('rules-b')" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;padding:4px 10px;border-radius:5px;color:#7ab8b0;cursor:pointer;font-size:10px;font-family:inherit">Copy</button>
+          <pre id="rules-b" style="color:#7ab8b0;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.6;white-space:pre-wrap;margin:0">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /families/{familyId}/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:16px">Không bảo mật — chỉ dùng tạm khi debug</div>
+      </div>
+
+      <a href="https://console.firebase.google.com" target="_blank" class="btn btn-primary btn-full" style="text-decoration:none;margin-top:4px">
+        <span class="material-symbols-rounded">open_in_new</span> Mở Firebase Console
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap"></div>
+
+<script>
+// ============================================================
+// STATE & STORAGE
+// ============================================================
+let state = {
+  currentUser: 'husband', // husband | wife
+  husbandName: 'Chồng',
+  wifeName: 'Vợ',
+  monthlyBudget: 20000000,
+  transactions: [],
+  categoryBudgets: {},
+  categoriesExpense: [
+    {id:'c1',name:'Nhà ở',emoji:'🏠'},
+    {id:'c2',name:'Ăn uống',emoji:'🍜'},
+    {id:'c3',name:'Di chuyển',emoji:'🚗'},
+    {id:'c4',name:'Sức khỏe',emoji:'🏥'},
+    {id:'c5',name:'Mua sắm',emoji:'🛍️'},
+    {id:'c6',name:'Giáo dục',emoji:'📚'},
+    {id:'c7',name:'Giải trí',emoji:'🎮'},
+    {id:'c8',name:'Tiện ích',emoji:'⚡'},
+    {id:'c9',name:'Khác',emoji:'📌'},
+  ],
+  categoriesIncome: [
+    {id:'i1',name:'Lương',emoji:'💼'},
+    {id:'i2',name:'Thưởng',emoji:'🎁'},
+    {id:'i3',name:'Đầu tư',emoji:'📈'},
+    {id:'i4',name:'Thu nhập phụ',emoji:'💡'},
+    {id:'i5',name:'Khác',emoji:'💵'},
+  ]
+};
+
+// Current view states
+let currentTab = 'home';
+let txFilter = 'all';
+let txPeriodDate = new Date();
+let budgetPeriodDate = new Date();
+let reportPeriodDate = new Date();
+let reportYear = new Date().getFullYear();
+let reportTab = 'month';
+let catTab = 'expense';
+let editingTxId = null;
+
+function saveState() {
+  localStorage.setItem('viGiaDinh_v2', JSON.stringify(state));
+}
+function loadState() {
+  const raw = localStorage.getItem('viGiaDinh_v2');
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      state = {...state, ...saved};
+    } catch(e){}
+  }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+const fmt = n => {
+  if (n === undefined || n === null || isNaN(n)) return '0 ₫';
+  return Math.abs(n).toLocaleString('vi-VN') + ' ₫';
+};
+const fmtSigned = (n, type) => {
+  const prefix = type === 'income' ? '+' : '-';
+  return prefix + fmt(n);
+};
+const monthYear = d => `Tháng ${d.getMonth()+1}/${d.getFullYear()}`;
+const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+const today = () => new Date().toISOString().split('T')[0];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, dur);
+}
+
+function getCatById(id) {
+  return [...state.categoriesExpense, ...state.categoriesIncome].find(c => c.id === id) || {name:'Khác',emoji:'📌'};
+}
+
+function getMonthTransactions(date) {
+  const key = dateKey(date);
+  return state.transactions.filter(t => t.date && t.date.startsWith(key));
+}
+
+function getTxStats(txs) {
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  return {income, expense, balance: income - expense};
+}
+
+const COLORS = ['#0dcc9c','#3b82f6','#f59e0b','#a855f7','#f43f5e','#10b981','#6366f1','#ec4899','#84cc16','#14b8a6'];
+
+// ============================================================
+// SETUP
+// ============================================================
+let setupRole = 'husband';
+function selectSetupRole(role) {
+  setupRole = role;
+  document.querySelectorAll('#setup-role .owner-btn').forEach(b => {
+    b.className = 'owner-btn';
+    if (b.dataset.role === role) b.className = 'owner-btn active-' + role;
+  });
+}
+function setupComplete() {
+  const husbandName = document.getElementById('setup-name-husband').value.trim();
+  const wifeName = document.getElementById('setup-name-wife').value.trim();
+  if (!husbandName || !wifeName) { toast('⚠️ Vui lòng nhập đầy đủ tên'); return; }
+  state.husbandName = husbandName;
+  state.wifeName = wifeName;
+  state.currentUser = setupRole;
+  const budget = parseInt(document.getElementById('setup-budget').value) || 20000000;
+  state.monthlyBudget = budget;
+  saveState();
+  document.getElementById('screen-setup').style.display = 'none';
+  document.getElementById('main-app').style.display = 'flex';
+  initApp();
+}
+
+// ============================================================
+// APP INIT
+// ============================================================
+function initApp() {
+  renderAllNavs();
+  updateOwnerBtns();
+  renderHome();
+  renderTxScreen();
+  renderBudgetScreen();
+  renderReportScreen();
+  renderSettingsScreen();
+  updateHeaderAvatar();
+}
+
+function renderAllNavs() {
+  const navIds = ['home','transactions','budget','reports','settings'];
+  const navDefs = [
+    {id:'home',icon:'home',label:'Trang chủ'},
+    {id:'transactions',icon:'receipt_long',label:'Giao dịch'},
+    {id:'fab',icon:'',label:''},   // placeholder for FAB
+    {id:'reports',icon:'pie_chart',label:'Báo cáo'},
+    {id:'settings',icon:'settings',label:'Cài đặt'},
+  ];
+  navIds.forEach(sid => {
+    const el = document.getElementById('bottom-nav-' + sid);
+    if (!el) return;
+    el.className = 'bottom-nav';
+    el.innerHTML = navDefs.map(n => {
+      if (n.id === 'fab') return `
+        <div style="flex:1;display:flex;justify-content:center;align-items:center">
+          <button class="fab-btn" onclick="quickOpenAddTx()" aria-label="Thêm giao dịch">
+            <span class="material-symbols-rounded">add</span>
+          </button>
+        </div>`;
+      return `
+        <button class="nav-btn ${currentTab===n.id?'active':''}" onclick="switchTab('${n.id}')">
+          <span class="material-symbols-rounded ${currentTab===n.id?'fill':''}">${n.icon}</span>
+          <span class="label">${n.label}</span>
+        </button>`;
+    }).join('');
+  });
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  renderAllNavs();
+  if (tab==='reports') renderReportScreen();
+  if (tab==='home') renderHome();
+  if (tab==='budget') renderBudgetScreen();
+  if (tab==='transactions') renderTxScreen();
+  if (tab==='settings') renderSettingsScreen();
+}
+
+function updateOwnerBtns() {
+  const hBtn = document.getElementById('owner-btn-husband');
+  const vBtn = document.getElementById('owner-btn-wife');
+  if (hBtn) hBtn.textContent = `👨 ${state.husbandName}`;
+  if (vBtn) vBtn.textContent = `👩 ${state.wifeName}`;
+  document.getElementById('filter-husband-name').textContent = state.husbandName;
+  document.getElementById('filter-wife-name').textContent = state.wifeName;
+  document.getElementById('husband-name-label').textContent = state.husbandName;
+  document.getElementById('wife-name-label').textContent = state.wifeName;
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function renderHome() {
+  const now = new Date();
+  document.getElementById('home-greeting').textContent = getGreeting();
+  document.getElementById('home-title').textContent = state.currentUser === 'husband' ? state.husbandName : state.wifeName;
+  document.getElementById('banner-month').textContent = monthYear(now);
+
+  const monthTxs = getMonthTransactions(now);
+  const {income, expense, balance} = getTxStats(monthTxs);
+
+  document.getElementById('banner-expense').textContent = fmt(expense);
+  document.getElementById('banner-income').textContent = fmt(income);
+  document.getElementById('banner-balance').textContent = fmt(balance);
+
+  // Budget
+  const budget = state.monthlyBudget;
+  const pct = budget > 0 ? Math.min(100, Math.round(expense/budget*100)) : 0;
+  const bar = document.getElementById('budget-progress-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 90 ? 'var(--expense)' : pct >= 70 ? 'var(--warning)' : 'var(--primary)';
+  const pctLabel = document.getElementById('budget-pct-label');
+  pctLabel.textContent = pct + '%';
+  pctLabel.className = 'badge ' + (pct >= 90 ? 'badge-expense' : 'badge-income');
+  document.getElementById('budget-spent-label').textContent = `Đã chi: ${fmt(expense)}`;
+  document.getElementById('budget-total-label').textContent = `Hạn mức: ${fmt(budget)}`;
+
+  // Couple
+  const husbandTxs = monthTxs.filter(t=>t.owner==='husband'&&t.type==='expense');
+  const wifeTxs = monthTxs.filter(t=>t.owner==='wife'&&t.type==='expense');
+  const hTotal = husbandTxs.reduce((s,t)=>s+t.amount,0);
+  const vTotal = wifeTxs.reduce((s,t)=>s+t.amount,0);
+  document.getElementById('home-husband-total').textContent = fmt(hTotal);
+  document.getElementById('home-wife-total').textContent = fmt(vTotal);
+  document.getElementById('husband-tx-count').textContent = `${husbandTxs.length} giao dịch`;
+  document.getElementById('wife-tx-count').textContent = `${wifeTxs.length} giao dịch`;
+
+  // Recent
+  const recent = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const list = document.getElementById('home-recent-list');
+  if (recent.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">📋</div><h3>Chưa có giao dịch</h3><p>Nhấn + để thêm giao dịch đầu tiên</p></div>`;
+  } else {
+    list.innerHTML = recent.map(t => renderTxItem(t)).join('');
+  }
+}
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 11) return '☀️ Chào buổi sáng,';
+  if (h < 14) return '🌤️ Chào buổi trưa,';
+  if (h < 18) return '🌅 Chào buổi chiều,';
+  return '🌙 Chào buổi tối,';
+}
+
+function renderTxItem(t) {
+  const cat = getCatById(t.category);
+  const ownerName = t.owner === 'husband' ? state.husbandName : state.wifeName;
+  const ownerColor = t.owner === 'husband' ? 'var(--husband)' : 'var(--wife)';
+  const bg = t.type === 'income' ? 'var(--income-dim)' : 'var(--expense-dim)';
+  const amtColor = t.type === 'income' ? 'income' : 'expense';
+  const sign = t.type === 'income' ? '+' : '-';
+  const dateStr = t.date ? new Date(t.date+'T00:00:00').toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'}) : '';
+  return `<div class="tx-item" onclick="showTxDetail('${t.id}')">
+    <div class="tx-icon" style="background:${bg}">${cat.emoji}</div>
+    <div class="tx-info">
+      <div class="tx-name">${t.note || cat.name}</div>
+      <div class="tx-meta">${dateStr} · <span style="color:${ownerColor};font-weight:700">${ownerName}</span>${t.shared?' · <span class="share-badge"><span class="material-symbols-rounded" style="font-size:11px">share</span> Chung</span>':''}</div>
+    </div>
+    <div class="tx-amount ${amtColor}">${sign}${fmt(t.amount)}</div>
+  </div>`;
+}
+
+// ============================================================
+// TRANSACTIONS SCREEN
+// ============================================================
+function renderTxScreen() {
+  document.getElementById('tx-period-label').textContent = monthYear(txPeriodDate);
+  const key = dateKey(txPeriodDate);
+  let txs = state.transactions.filter(t => t.date && t.date.startsWith(key));
+  if (txFilter === 'husband') txs = txs.filter(t=>t.owner==='husband');
+  else if (txFilter === 'wife') txs = txs.filter(t=>t.owner==='wife');
+  else if (txFilter === 'income') txs = txs.filter(t=>t.type==='income');
+  else if (txFilter === 'expense') txs = txs.filter(t=>t.type==='expense');
+  txs.sort((a,b) => b.date.localeCompare(a.date));
+
+  const list = document.getElementById('tx-list');
+  if (txs.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>Không có giao dịch</h3><p>Tháng này chưa có giao dịch nào</p></div>`;
+    return;
+  }
+  // Group by date
+  const groups = {};
+  txs.forEach(t => {
+    if (!groups[t.date]) groups[t.date] = [];
+    groups[t.date].push(t);
+  });
+  let html = '';
+  Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(date => {
+    const d = new Date(date+'T00:00:00');
+    const label = d.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+    const dayTotal = groups[date].reduce((s,t)=>s+(t.type==='expense'?-t.amount:t.amount),0);
+    html += `<div class="list-group-header" style="display:flex;justify-content:space-between">
+      <span>${label}</span>
+      <span style="color:${dayTotal>=0?'var(--income)':'var(--expense)'}">${dayTotal>=0?'+':''}${fmt(Math.abs(dayTotal))}</span>
+    </div>`;
+    groups[date].forEach(t => { html += renderTxItem(t); });
+  });
+  list.innerHTML = html;
+}
+
+function filterTx(f, btn) {
+  txFilter = f;
+  document.querySelectorAll('.person-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTxScreen();
+}
+
+function changeTxPeriod(dir) {
+  txPeriodDate = new Date(txPeriodDate.getFullYear(), txPeriodDate.getMonth() + dir, 1);
+  renderTxScreen();
+}
+
+// ============================================================
+// ADD/EDIT TRANSACTION
+// ============================================================
+let currentTxType = 'expense';
+let currentTxOwner = 'husband';
+
+// Pre-rendered flag to avoid re-rendering every open
+let _txFormReady = false;
+
+function quickOpenAddTx() {
+  // Open modal FIRST for instant feel, then populate
+  const overlay = document.getElementById('modal-add-tx');
+  overlay.classList.add('open');
+  // Use requestAnimationFrame so modal animates in before we do JS work
+  requestAnimationFrame(() => {
+    _resetTxForm();
+  });
+}
+
+function openAddTx() {
+  quickOpenAddTx();
+}
+
+function _resetTxForm() {
+  editingTxId = null;
+  document.getElementById('add-tx-title').textContent = 'Thêm Giao Dịch';
+  document.getElementById('tx-amount').value = '';
+  document.getElementById('tx-amount-display').textContent = '';
+  document.getElementById('tx-note').value = '';
+  document.getElementById('tx-date').value = today();
+  document.getElementById('tx-shared').checked = false;
+  document.getElementById('tx-edit-id').value = '';
+  // Set type visually without re-rendering chips if same type
+  currentTxType = 'expense';
+  currentTxOwner = state.currentUser;
+  document.getElementById('type-btn-expense').className = 'type-btn active-expense';
+  document.getElementById('type-btn-income').className = 'type-btn';
+  document.getElementById('owner-btn-husband').className = 'owner-btn' + (state.currentUser==='husband'?' active-husband':'');
+  document.getElementById('owner-btn-wife').className = 'owner-btn' + (state.currentUser==='wife'?' active-wife':'');
+  renderCatChips();
+  // Focus amount after modal animation
+  setTimeout(() => { document.getElementById('tx-amount').focus(); }, 250);
+}
+
+function setTxType(type) {
+  currentTxType = type;
+  document.getElementById('type-btn-expense').className = 'type-btn' + (type==='expense'?' active-expense':'');
+  document.getElementById('type-btn-income').className = 'type-btn' + (type==='income'?' active-income':'');
+  renderCatChips();
+}
+
+function setTxOwner(owner) {
+  currentTxOwner = owner;
+  document.getElementById('owner-btn-husband').className = 'owner-btn' + (owner==='husband'?' active-husband':'');
+  document.getElementById('owner-btn-wife').className = 'owner-btn' + (owner==='wife'?' active-wife':'');
+}
+
+let selectedCat = null;
+function renderCatChips() {
+  const cats = currentTxType === 'expense' ? state.categoriesExpense : state.categoriesIncome;
+  selectedCat = cats[0]?.id || null;
+  document.getElementById('tx-cat-chips').innerHTML = cats.map(c =>
+    `<button class="cat-chip ${c.id===selectedCat?'selected':''}" onclick="selectCat('${c.id}')">${c.emoji} ${c.name}</button>`
+  ).join('');
+}
+
+function selectCat(id) {
+  selectedCat = id;
+  document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.cat-chip').forEach(b => { if(b.onclick.toString().includes(`'${id}'`)) b.classList.add('selected'); });
+}
+
+function formatTxAmount() {
+  const v = parseInt(document.getElementById('tx-amount').value) || 0;
+  document.getElementById('tx-amount-display').textContent = v > 0 ? fmt(v) : '';
+}
+
+function saveTx() {
+  const amount = parseInt(document.getElementById('tx-amount').value);
+  if (!amount || amount <= 0) { toast('⚠️ Vui lòng nhập số tiền hợp lệ'); return; }
+  const note = document.getElementById('tx-note').value.trim();
+  const date = document.getElementById('tx-date').value || today();
+  const shared = document.getElementById('tx-shared').checked;
+  const editId = document.getElementById('tx-edit-id').value;
+
+  if (editId) {
+    const idx = state.transactions.findIndex(t=>t.id===editId);
+    if (idx !== -1) {
+      state.transactions[idx] = {...state.transactions[idx], amount, note, category: selectedCat||'c9', owner: currentTxOwner, type: currentTxType, date, shared};
+      fbPushTx(state.transactions[idx]);
+    }
+    toast('✅ Đã cập nhật giao dịch');
+  } else {
+    const newTx = {
+      id: uid(), amount, note, category: selectedCat||'c9',
+      owner: currentTxOwner, type: currentTxType, date, shared,
+      createdBy: state.currentUser
+    };
+    state.transactions.push(newTx);
+    fbPushTx(newTx);
+    toast('✅ Đã thêm giao dịch');
+  }
+  saveState();
+  closeModal('modal-add-tx');
+  renderHome();
+  renderTxScreen();
+  renderBudgetScreen();
+}
+
+function showTxDetail(id) {
+  const t = state.transactions.find(tx=>tx.id===id);
+  if (!t) return;
+  const cat = getCatById(t.category);
+  const ownerName = t.owner === 'husband' ? state.husbandName : state.wifeName;
+  const amtColor = t.type === 'income' ? 'var(--income)' : 'var(--expense)';
+  const d = new Date(t.date+'T00:00:00').toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('tx-detail-content').innerHTML = `
+    <div style="text-align:center;padding:16px 0 24px">
+      <div style="font-size:48px;margin-bottom:12px">${cat.emoji}</div>
+      <div style="font-size:28px;font-weight:900;font-family:'JetBrains Mono',monospace;color:${amtColor}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+      <div style="font-size:16px;font-weight:700;margin-top:8px">${t.note || cat.name}</div>
+      <div style="font-size:13px;color:var(--text3);margin-top:4px">${cat.emoji} ${cat.name}</div>
+    </div>
+    <div class="card-sm" style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text3);font-weight:600">Ngày</span>
+        <span style="font-size:14px;font-weight:700">${d}</span>
+      </div>
+    </div>
+    <div class="card-sm" style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text3);font-weight:600">Người</span>
+        <span class="badge ${t.owner==='husband'?'badge-husband':'badge-wife'}">${ownerName}</span>
+      </div>
+    </div>
+    <div class="card-sm" style="margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text3);font-weight:600">Chia sẻ</span>
+        <span>${t.shared?'<span class="share-badge">✅ Hiện với cả hai</span>':'<span style="color:var(--text3);font-size:13px">Chỉ mình bạn</span>'}</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-outline" onclick="editTx('${t.id}')"><span class="material-symbols-rounded">edit</span> Sửa</button>
+      <button class="btn btn-danger" onclick="deleteTx('${t.id}')"><span class="material-symbols-rounded">delete</span> Xóa</button>
+    </div>
+  `;
+  openModal('modal-tx-detail');
+}
+
+function editTx(id) {
+  const t = state.transactions.find(tx=>tx.id===id);
+  if (!t) return;
+  closeModal('modal-tx-detail');
+  editingTxId = id;
+  currentTxType = t.type;
+  currentTxOwner = t.owner;
+  document.getElementById('add-tx-title').textContent = 'Sửa Giao Dịch';
+  document.getElementById('tx-amount').value = t.amount;
+  document.getElementById('tx-amount-display').textContent = fmt(t.amount);
+  document.getElementById('tx-note').value = t.note || '';
+  document.getElementById('tx-date').value = t.date;
+  document.getElementById('tx-shared').checked = !!t.shared;
+  document.getElementById('tx-edit-id').value = id;
+  setTxType(t.type);
+  setTxOwner(t.owner);
+  renderCatChips();
+  selectedCat = t.category;
+  document.querySelectorAll('.cat-chip').forEach(b => {
+    b.classList.remove('selected');
+    if(b.onclick.toString().includes(`'${t.category}'`)) b.classList.add('selected');
+  });
+  openModal('modal-add-tx');
+}
+
+function deleteTx(id) {
+  if (!confirm('Xác nhận xóa giao dịch này?')) return;
+  state.transactions = state.transactions.filter(t=>t.id!==id);
+  fbDeleteTx(id);
+  saveState();
+  closeModal('modal-tx-detail');
+  toast('🗑️ Đã xóa giao dịch');
+  renderHome();
+  renderTxScreen();
+  renderBudgetScreen();
+}
+
+// ============================================================
+// BUDGET SCREEN
+// ============================================================
+function renderBudgetScreen() {
+  document.getElementById('budget-period-label').textContent = monthYear(budgetPeriodDate);
+  const txs = getMonthTransactions(budgetPeriodDate);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const budget = state.monthlyBudget;
+  const pct = budget > 0 ? Math.min(100, Math.round(expense/budget*100)) : 0;
+
+  document.getElementById('budget-total-spent').textContent = fmt(expense);
+  document.getElementById('budget-limit-display').textContent = fmt(budget);
+  const bar = document.getElementById('budget-main-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 90 ? 'var(--expense)' : pct >= 70 ? 'var(--warning)' : 'var(--primary)';
+  document.getElementById('budget-main-used').textContent = pct + '%';
+  document.getElementById('budget-main-remaining').textContent = `Còn lại: ${fmt(Math.max(0, budget - expense))}`;
+
+  // By category
+  const expCats = state.categoriesExpense;
+  const html = expCats.map(cat => {
+    const spent = txs.filter(t=>t.type==='expense'&&t.category===cat.id).reduce((s,t)=>s+t.amount,0);
+    const catBudget = state.categoryBudgets[cat.id] || 0;
+    const pctCat = catBudget > 0 ? Math.min(100, Math.round(spent/catBudget*100)) : 0;
+    const color = pctCat >= 90 ? 'var(--expense)' : pctCat >= 70 ? 'var(--warning)' : 'var(--primary)';
+    if (spent === 0 && catBudget === 0) return '';
+    return `<div class="budget-item">
+      <div class="budget-row">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span>${cat.emoji}</span>
+          <span class="budget-name">${cat.name}</span>
+        </div>
+        <span class="budget-nums">${fmt(spent)}${catBudget>0?' / '+fmt(catBudget):''}</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" style="width:${Math.max(catBudget>0?pctCat:0,spent>0?2:0)}%;background:${color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('budget-cats-list').innerHTML = html || `<div style="color:var(--text3);font-size:14px;text-align:center;padding:24px">Chưa có giao dịch nào trong tháng này</div>`;
+}
+
+function changeBudgetPeriod(dir) {
+  budgetPeriodDate = new Date(budgetPeriodDate.getFullYear(), budgetPeriodDate.getMonth() + dir, 1);
+  renderBudgetScreen();
+}
+
+function openEditBudget() {
+  document.getElementById('budget-edit-amount').value = state.monthlyBudget;
+  // cat inputs
+  const html = state.categoriesExpense.map(c => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="width:30px;font-size:18px;text-align:center">${c.emoji}</span>
+      <label style="flex:1;font-size:14px;font-weight:600;color:var(--text2)">${c.name}</label>
+      <div class="amount-input-wrap" style="width:140px">
+        <input class="form-control" style="font-size:14px;padding:8px 40px 8px 10px" type="number" min="0" placeholder="0"
+          id="catbudget-${c.id}" value="${state.categoryBudgets[c.id]||''}"/>
+        <span class="currency" style="font-size:11px">₫</span>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('budget-cat-inputs').innerHTML = html;
+  openModal('modal-edit-budget');
+}
+
+function saveBudget() {
+  const amt = parseInt(document.getElementById('budget-edit-amount').value) || 0;
+  state.monthlyBudget = amt;
+  state.categoriesExpense.forEach(c => {
+    const el = document.getElementById('catbudget-'+c.id);
+    if (el) {
+      const v = parseInt(el.value) || 0;
+      if (v > 0) state.categoryBudgets[c.id] = v;
+      else delete state.categoryBudgets[c.id];
+    }
+  });
+  saveState();
+  closeModal('modal-edit-budget');
+  toast('✅ Đã lưu ngân sách');
+  fbPushSettings();
+  renderBudgetScreen();
+  renderHome();
+}
+
+// ============================================================
+// REPORT SCREEN
+// ============================================================
+function renderReportScreen() {
+  if (reportTab === 'month') renderMonthReport();
+  else if (reportTab === 'year') renderYearReport();
+  else renderAllReport();
+}
+
+function switchReportTab(tab, btn) {
+  reportTab = tab;
+  document.querySelectorAll('#report-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('report-month-view').style.display = tab==='month' ? '' : 'none';
+  document.getElementById('report-year-view').style.display = tab==='year' ? '' : 'none';
+  document.getElementById('report-all-view').style.display = tab==='all' ? '' : 'none';
+  renderReportScreen();
+}
+
+function changeReportPeriod(dir) {
+  reportPeriodDate = new Date(reportPeriodDate.getFullYear(), reportPeriodDate.getMonth() + dir, 1);
+  renderMonthReport();
+}
+
+function changeReportYear(dir) {
+  reportYear += dir;
+  renderYearReport();
+}
+
+function renderMonthReport() {
+  document.getElementById('report-period-label').textContent = monthYear(reportPeriodDate);
+  const txs = getMonthTransactions(reportPeriodDate);
+  const {income, expense} = getTxStats(txs);
+  document.getElementById('report-income').textContent = fmt(income);
+  document.getElementById('report-expense').textContent = fmt(expense);
+
+  // Donut chart
+  const expTxs = txs.filter(t=>t.type==='expense');
+  const catMap = {};
+  expTxs.forEach(t => { catMap[t.category] = (catMap[t.category]||0) + t.amount; });
+  const cats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  drawDonut('donut-chart', cats, expense);
+
+  // Legend
+  let legend = '';
+  cats.forEach(([cid, amt], i) => {
+    const c = getCatById(cid);
+    const pct = expense > 0 ? Math.round(amt/expense*100) : 0;
+    legend += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:12px;height:12px;border-radius:3px;background:${COLORS[i%COLORS.length]};flex-shrink:0"></div>
+        <span style="font-size:14px">${c.emoji} ${c.name}</span>
+      </div>
+      <div style="text-align:right">
+        <span style="font-weight:700;font-size:14px">${fmt(amt)}</span>
+        <span style="font-size:12px;color:var(--text3);margin-left:6px">${pct}%</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById('donut-legend').innerHTML = legend;
+
+  // By person
+  const hExp = txs.filter(t=>t.type==='expense'&&t.owner==='husband').reduce((s,t)=>s+t.amount,0);
+  const vExp = txs.filter(t=>t.type==='expense'&&t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+  const hInc = txs.filter(t=>t.type==='income'&&t.owner==='husband').reduce((s,t)=>s+t.amount,0);
+  const vInc = txs.filter(t=>t.type==='income'&&t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+  document.getElementById('report-by-person').innerHTML = `
+    <div style="display:grid;gap:12px">
+      <div style="background:var(--husband-dim);border-radius:12px;padding:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-weight:700;color:var(--husband)">👨 ${state.husbandName}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px">
+          <span>Chi: <b>${fmt(hExp)}</b></span>
+          <span>Thu: <b style="color:var(--income)">${fmt(hInc)}</b></span>
+        </div>
+      </div>
+      <div style="background:var(--wife-dim);border-radius:12px;padding:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-weight:700;color:var(--wife)">👩 ${state.wifeName}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px">
+          <span>Chi: <b>${fmt(vExp)}</b></span>
+          <span>Thu: <b style="color:var(--income)">${fmt(vInc)}</b></span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Bar chart - weekly
+  const weeks = [0,0,0,0];
+  const weekInc = [0,0,0,0];
+  txs.forEach(t => {
+    const d = new Date(t.date+'T00:00:00').getDate();
+    const w = Math.min(3, Math.floor((d-1)/7));
+    if (t.type==='expense') weeks[w] += t.amount;
+    else weekInc[w] += t.amount;
+  });
+  drawBarChart('bar-chart', ['Tuần 1','Tuần 2','Tuần 3','Tuần 4'], weeks, weekInc);
+}
+
+function renderYearReport() {
+  document.getElementById('report-year-label').textContent = reportYear.toString();
+  const months = Array.from({length:12},(_, i)=>{
+    const d = new Date(reportYear, i, 1);
+    const txs = getMonthTransactions(d);
+    const {income, expense} = getTxStats(txs);
+    return {month:i+1, income, expense, txCount:txs.length};
+  });
+  const totalIncome = months.reduce((s,m)=>s+m.income,0);
+  const totalExpense = months.reduce((s,m)=>s+m.expense,0);
+  document.getElementById('year-income').textContent = fmt(totalIncome);
+  document.getElementById('year-expense').textContent = fmt(totalExpense);
+
+  // Year bar chart
+  const labels = months.map(m=>`T${m.month}`);
+  const expVals = months.map(m=>m.expense);
+  const incVals = months.map(m=>m.income);
+  drawBarChart('year-bar-chart', labels, expVals, incVals);
+
+  // Month list
+  let html = '';
+  months.filter(m=>m.txCount>0).reverse().forEach(m => {
+    html += `<div class="card-sm" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:700">Tháng ${m.month}</div><div style="font-size:12px;color:var(--text3)">${m.txCount} giao dịch</div></div>
+      <div style="text-align:right"><div style="color:var(--expense);font-weight:700;font-size:14px">-${fmt(m.expense)}</div><div style="color:var(--income);font-size:12px;font-weight:600">+${fmt(m.income)}</div></div>
+    </div>`;
+  });
+  document.getElementById('year-months-list').innerHTML = html || `<div style="color:var(--text3);text-align:center;padding:24px;font-size:14px">Không có dữ liệu năm ${reportYear}</div>`;
+}
+
+function renderAllReport() {
+  const all = state.transactions;
+  const totalIncome = all.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const totalExpense = all.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  document.getElementById('all-tx-count').textContent = all.length.toLocaleString();
+  document.getElementById('all-income').textContent = fmt(totalIncome);
+  document.getElementById('all-expense').textContent = fmt(totalExpense);
+
+  // Unique months
+  const months = new Set(all.map(t=>t.date?.slice(0,7))).size;
+  document.getElementById('all-months-count').textContent = months;
+
+  // Years
+  const years = {};
+  all.forEach(t => {
+    const y = t.date?.slice(0,4);
+    if (!y) return;
+    if (!years[y]) years[y] = {income:0, expense:0, count:0};
+    years[y][t.type] += t.amount;
+    years[y].count++;
+  });
+  let yearsHtml = '';
+  Object.keys(years).sort((a,b)=>b.localeCompare(a)).forEach(y => {
+    yearsHtml += `<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div><div style="font-weight:800;font-size:16px">${y}</div><div style="font-size:12px;color:var(--text3)">${years[y].count} giao dịch</div></div>
+      <div style="text-align:right"><div style="color:var(--expense);font-weight:700">-${fmt(years[y].expense)}</div><div style="color:var(--income);font-size:12px;font-weight:600">+${fmt(years[y].income)}</div></div>
+    </div>`;
+  });
+  document.getElementById('all-years-list').innerHTML = yearsHtml || '<div style="color:var(--text3);text-align:center;padding:16px;font-size:14px">Chưa có dữ liệu</div>';
+
+  // Top cats
+  const catMap = {};
+  all.filter(t=>t.type==='expense').forEach(t => { catMap[t.category]=(catMap[t.category]||0)+t.amount; });
+  const sorted = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  let catsHtml = '';
+  sorted.forEach(([cid, amt], i) => {
+    const c = getCatById(cid);
+    catsHtml += `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:28px;height:28px;border-radius:8px;background:${COLORS[i]}22;display:flex;align-items:center;justify-content:center;font-size:16px">${c.emoji}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px">${c.name}</div></div>
+      <div style="font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--expense)">${fmt(amt)}</div>
+    </div>`;
+  });
+  document.getElementById('all-top-cats').innerHTML = catsHtml || '<div style="color:var(--text3);font-size:14px;text-align:center;padding:16px">Chưa có dữ liệu</div>';
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+function drawDonut(canvasId, cats, total) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = 200 * dpr;
+  canvas.height = 200 * dpr;
+  canvas.style.width = '200px';
+  canvas.style.height = '200px';
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,200,200);
+  const cx=100, cy=100, r=76, ir=52;
+  if (cats.length === 0 || total === 0) {
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle='#e2ece9'; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,ir,0,Math.PI*2); ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim()||'#fff'; ctx.fill();
+    return;
+  }
+  let start = -Math.PI/2;
+  cats.forEach(([cid,amt],i) => {
+    const angle = (amt/total)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,start+angle); ctx.closePath();
+    ctx.fillStyle = COLORS[i%COLORS.length]; ctx.fill();
+    start += angle;
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,ir,0,Math.PI*2);
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  ctx.fillStyle = isDark ? '#111f1c' : '#fff'; ctx.fill();
+}
+
+function drawBarChart(canvasId, labels, vals, vals2) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = parseInt(canvas.style.width||canvas.width)||360;
+  const H = parseInt(canvas.style.height||canvas.height)||140;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  const pad=16, bottom=24, top=12;
+  const max = Math.max(...vals,...(vals2||[]),1);
+  const bw = (W-pad*2)/labels.length;
+  const barW = Math.min(bw*0.35, 20);
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  const textColor = isDark ? '#7ab8b0' : '#4a6460';
+  labels.forEach((l,i) => {
+    const x = pad + bw*i + bw/2;
+    const hE = ((vals[i]||0)/max)*(H-top-bottom);
+    if (hE > 0) {
+      const gE = ctx.createLinearGradient(0,H-bottom-hE,0,H-bottom);
+      gE.addColorStop(0,'#f43f5e'); gE.addColorStop(1,'#f43f5e44');
+      ctx.fillStyle=gE;
+      ctx.beginPath(); ctx.roundRect(x-barW-(vals2?2:0), H-bottom-hE, barW, hE, [4,4,0,0]); ctx.fill();
+    }
+    if (vals2) {
+      const hI = ((vals2[i]||0)/max)*(H-top-bottom);
+      if (hI > 0) {
+        const gI = ctx.createLinearGradient(0,H-bottom-hI,0,H-bottom);
+        gI.addColorStop(0,'#0dcc9c'); gI.addColorStop(1,'#0dcc9c44');
+        ctx.fillStyle=gI;
+        ctx.beginPath(); ctx.roundRect(x+2, H-bottom-hI, barW, hI, [4,4,0,0]); ctx.fill();
+      }
+    }
+    ctx.fillStyle=textColor; ctx.font=`600 ${labels.length>8?9:10}px 'Be Vietnam Pro',sans-serif`;
+    ctx.textAlign='center'; ctx.fillText(l, x, H-4);
+  });
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+function renderCatsList() {
+  const renderList = (cats, containerId) => {
+    document.getElementById(containerId).innerHTML = cats.map(c => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:22px;width:32px;text-align:center">${c.emoji}</span>
+        <span style="flex:1;font-weight:600">${c.name}</span>
+        <button class="btn btn-danger btn-sm btn-icon" onclick="deleteCat('${c.id}','${containerId.includes('income')?'income':'expense'}')" style="width:32px;height:32px">
+          <span class="material-symbols-rounded" style="font-size:16px">delete</span>
+        </button>
+      </div>
+    `).join('') || '<div style="color:var(--text3);font-size:14px;padding:12px 0">Chưa có danh mục</div>';
+  };
+  renderList(state.categoriesExpense, 'cats-expense-list');
+  renderList(state.categoriesIncome, 'cats-income-list');
+}
+
+function switchCatTab(tab, btn) {
+  catTab = tab;
+  document.querySelectorAll('#modal-manage-cats .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cats-expense-list').style.display = tab==='expense' ? '' : 'none';
+  document.getElementById('cats-income-list').style.display = tab==='income' ? '' : 'none';
+}
+
+function addCategory() {
+  const name = document.getElementById('new-cat-name').value.trim();
+  const emoji = document.getElementById('new-cat-emoji').value.trim() || '📌';
+  if (!name) { toast('⚠️ Nhập tên danh mục'); return; }
+  const cat = {id: uid(), name, emoji};
+  if (catTab === 'expense') state.categoriesExpense.push(cat);
+  else state.categoriesIncome.push(cat);
+  saveState();
+  renderCatsList();
+  document.getElementById('new-cat-name').value = '';
+  document.getElementById('new-cat-emoji').value = '';
+  toast('✅ Đã thêm danh mục');
+  renderSettingsScreen();
+}
+
+function deleteCat(id, type) {
+  if (!confirm('Xóa danh mục này?')) return;
+  if (type === 'expense') state.categoriesExpense = state.categoriesExpense.filter(c=>c.id!==id);
+  else state.categoriesIncome = state.categoriesIncome.filter(c=>c.id!==id);
+  saveState();
+  renderCatsList();
+  toast('🗑️ Đã xóa');
+}
+
+// ============================================================
+// SETTINGS SCREEN
+// ============================================================
+function renderSettingsScreen() {
+  const name = state.currentUser === 'husband' ? state.husbandName : state.wifeName;
+  const partner = state.currentUser === 'husband' ? state.wifeName : state.husbandName;
+  document.getElementById('settings-user-name').textContent = name;
+  document.getElementById('settings-user-role').textContent = state.currentUser === 'husband' ? '👨 Chồng' : '👩 Vợ';
+  const av = document.getElementById('settings-avatar');
+  av.textContent = name[0]?.toUpperCase()||'?';
+  av.className = 'avatar ' + (state.currentUser==='husband'?'avatar-husband':'avatar-wife');
+  document.getElementById('settings-name-self').value = name;
+  document.getElementById('settings-name-partner').value = partner;
+  document.getElementById('settings-budget').value = state.monthlyBudget;
+  document.getElementById('partner-name-share').textContent = partner;
+
+  // Cats preview
+  const allCats = [...state.categoriesExpense.slice(0,4), ...state.categoriesIncome.slice(0,2)];
+  document.getElementById('settings-cats-preview').innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:8px">${allCats.map(c=>`<span class="badge badge-income">${c.emoji} ${c.name}</span>`).join('')}</div><div style="margin-top:8px;font-size:12px;color:var(--text3)">${state.categoriesExpense.length} danh mục chi • ${state.categoriesIncome.length} danh mục thu</div>`;
+  // Refresh Firebase status UI
+  updateFirebaseStatusUI(!!fbDb && !!fbFamilyId);
+  // Google auth UI
+  const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
+  const signedInEl = document.getElementById('settings-google-signed-in');
+  const signedOutEl = document.getElementById('settings-google-signed-out');
+  if (gUser) {
+    signedInEl.style.display = ''; signedOutEl.style.display = 'none';
+    document.getElementById('settings-google-name').textContent = gUser.displayName || '';
+    document.getElementById('settings-google-email').textContent = gUser.email || '';
+    const avWrap = document.getElementById('settings-google-avatar-wrap');
+    avWrap.innerHTML = gUser.photoURL
+      ? `<img src="${gUser.photoURL}" style="width:100%;height:100%;object-fit:cover" alt="avatar"/>`
+      : `<span style="font-size:20px;font-weight:800;color:var(--primary-dark)">${(gUser.displayName||'?')[0].toUpperCase()}</span>`;
+  } else {
+    signedInEl.style.display = 'none'; signedOutEl.style.display = '';
+  }
+  updateHeaderAvatar();
+}
+
+function saveSettings() {
+  const self = document.getElementById('settings-name-self').value.trim();
+  const partner = document.getElementById('settings-name-partner').value.trim();
+  if (!self || !partner) { toast('⚠️ Nhập đầy đủ tên'); return; }
+  if (state.currentUser === 'husband') { state.husbandName = self; state.wifeName = partner; }
+  else { state.wifeName = self; state.husbandName = partner; }
+  state.monthlyBudget = parseInt(document.getElementById('settings-budget').value) || state.monthlyBudget;
+  saveState();
+  updateOwnerBtns();
+  renderHome();
+  renderSettingsScreen();
+  fbPushSettings();
+  toast('✅ Đã lưu');
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function openSearchModal() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  openModal('modal-search');
+  setTimeout(()=>document.getElementById('search-input').focus(), 300);
+}
+
+function searchTx() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  if (!q) { document.getElementById('search-results').innerHTML = ''; return; }
+  const results = state.transactions.filter(t =>
+    (t.note||'').toLowerCase().includes(q) || getCatById(t.category).name.toLowerCase().includes(q)
+  ).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20);
+  document.getElementById('search-results').innerHTML = results.length ?
+    results.map(t=>renderTxItem(t)).join('') :
+    '<div style="text-align:center;padding:24px;color:var(--text3)">Không tìm thấy kết quả</div>';
+}
+
+// ============================================================
+// BACKUP & IMPORT/EXPORT
+// ============================================================
+function exportData() {
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `viGiaDinh_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Đã tải file sao lưu');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!confirm(`Nhập dữ liệu từ file? Dữ liệu hiện tại sẽ bị ghi đè.\n\nFile có ${data.transactions?.length||0} giao dịch.`)) return;
+      state = {...state, ...data};
+      saveState();
+      initApp();
+      toast('✅ Đã nhập dữ liệu thành công');
+    } catch(err) {
+      toast('❌ File không hợp lệ');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function exportCSV() {
+  const headers = ['Ngày','Loại','Số tiền','Mô tả','Danh mục','Người','Chia sẻ'];
+  const rows = state.transactions.sort((a,b)=>b.date.localeCompare(a.date)).map(t => {
+    const cat = getCatById(t.category);
+    const ownerName = t.owner==='husband'?state.husbandName:state.wifeName;
+    return [t.date, t.type==='income'?'Thu nhập':'Chi tiêu', t.amount, t.note||'', `${cat.emoji} ${cat.name}`, ownerName, t.shared?'Có':'Không'];
+  });
+  const csv = [headers, ...rows].map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `viGiaDinh_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Đã xuất file CSV');
+}
+
+function shareWithPartner() {
+  const sharedTxs = state.transactions.filter(t=>t.shared);
+  const shareData = {
+    type: 'shared_transactions',
+    from: state.currentUser,
+    fromName: state.currentUser==='husband' ? state.husbandName : state.wifeName,
+    transactions: sharedTxs,
+    categoriesExpense: state.categoriesExpense,
+    categoriesIncome: state.categoriesIncome,
+    exportDate: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(shareData, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `chia-se-giao-dich_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`✅ Đã tạo file chia sẻ (${sharedTxs.length} giao dịch)`);
+}
+
+function syncGoogleDrive() {
+  toast('📋 Để đồng bộ GDrive: Xuất file → Tải lên GDrive → Chia sẻ link với người bạn đời');
+}
+
+function confirmClearData() {
+  if (!confirm('⚠️ XÓA TOÀN BỘ dữ liệu?\nHành động này không thể hoàn tác!')) return;
+  if (!confirm('Xác nhận lần 2: Xóa tất cả giao dịch và cài đặt?')) return;
+  localStorage.removeItem('viGiaDinh_v2');
+  location.reload();
+}
+
+// ============================================================
+// MODAL MANAGEMENT
+// ============================================================
+function openModal(id) {
+  const m = document.getElementById(id);
+  m.classList.add('open');
+  if (id === 'modal-add-tx' && !document.getElementById('tx-edit-id').value) openAddTx();
+  if (id === 'modal-manage-cats') { renderCatsList(); catTab='expense'; }
+  if (id === 'modal-edit-budget') openEditBudget();
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ============================================================
+// GOOGLE AUTH & FIREBASE AUTHENTICATION
+// ============================================================
+let googleUser = null; // { uid, displayName, email, photoURL }
+
+async function loadFirebaseAuth() {
+  if (window.__fbAuthLoaded) return true;
+  try {
+    const authMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+    window.fbAuth = authMod;
+    window.__fbAuthLoaded = true;
+    return true;
+  } catch(e) { console.error('Auth SDK error:', e); return false; }
+}
+
+async function signInWithGoogle() {
+  const btn = document.getElementById('google-signin-btn');
+  const errEl = document.getElementById('google-signin-error');
+  btn.classList.add('loading');
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`;
+  errEl.style.display = 'none';
+
+  const savedConfig = localStorage.getItem('viGiaDinh_fbConfig');
+  if (!savedConfig) {
+    // No Firebase config yet — go to setup screen, wizard will prompt later
+    document.getElementById('screen-login').style.display = 'none';
+    const hasData = localStorage.getItem('viGiaDinh_v2');
+    if (hasData) {
+      document.getElementById('main-app').style.display = 'flex';
+      txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
+      initApp();
+      setTimeout(() => {
+        switchTab('settings');
+        setTimeout(() => openModal('modal-firebase-setup'), 500);
+        toast('👆 Nhập Firebase config để đăng nhập Google!', 4000);
+      }, 600);
+    } else {
+      document.getElementById('screen-setup').style.display = 'flex';
+    }
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`;
+    return;
+  }
+
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+
+    const config = JSON.parse(savedConfig);
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(config);
+
+    const firebaseUser = await signInWithFirebaseGoogle(app);
+
+    googleUser = {
+      uid: firebaseUser.uid,
+      displayName: firebaseUser.displayName,
+      email: firebaseUser.email,
+      photoURL: firebaseUser.photoURL
+    };
+    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+
+    if (!localStorage.getItem('viGiaDinh_v2')) {
+      document.getElementById('screen-login').style.display = 'none';
+      document.getElementById('screen-setup').style.display = 'flex';
+      document.getElementById('setup-name-husband').value = firebaseUser.displayName || '';
+      showGoogleInfoInSetup(firebaseUser);
+    } else {
+      document.getElementById('screen-login').style.display = 'none';
+      document.getElementById('main-app').style.display = 'flex';
+      txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
+      initApp();
+      setTimeout(autoReconnectFirebase, 500);
+      toast(`👋 Xin chào ${firebaseUser.displayName}!`, 3000);
+    }
+  } catch(e) {
+    console.error('Google sign-in error:', e);
+    let msg = 'Đăng nhập thất bại. ';
+    if (e.code === 'auth/popup-blocked')        msg += 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
+    else if (e.code === 'auth/popup-closed-by-user') msg += 'Bạn đã đóng cửa sổ đăng nhập.';
+    else if (e.code === 'auth/network-request-failed') msg += 'Lỗi kết nối mạng.';
+    else msg += e.message;
+    errEl.textContent = msg;
+    errEl.style.display = 'flex';
+    btn.classList.remove('loading');
+    btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`;
+  }
+}
+
+function skipLogin() {
+  document.getElementById('screen-login').style.display = 'none';
+  const hasData = localStorage.getItem('viGiaDinh_v2');
+  if (hasData) {
+    document.getElementById('main-app').style.display = 'flex';
+    txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
+    initApp();
+    setTimeout(autoReconnectFirebase, 800);
+  } else {
+    document.getElementById('screen-setup').style.display = 'flex';
+  }
+}
+
+function showGoogleInfoInSetup(user) {
+  const info = document.getElementById('setup-google-info');
+  if (!info) return;
+  info.style.display = 'flex';
+  document.getElementById('setup-google-avatar').src = user.photoURL || '';
+  document.getElementById('setup-google-name').textContent = user.displayName || '';
+  document.getElementById('setup-google-email').textContent = user.email || '';
+}
+
+function updateHeaderAvatar() {
+  const btn = document.getElementById('header-avatar-btn');
+  const txt = document.getElementById('header-avatar-text');
+  if (!btn || !txt) return;
+  const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
+  if (gUser?.photoURL) {
+    btn.innerHTML = `<img src="${gUser.photoURL}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+  } else {
+    const name = state.currentUser === 'husband' ? state.husbandName : state.wifeName;
+    txt.textContent = name[0]?.toUpperCase() || '?';
+  }
+}
+
+function signOut() {
+  if (!confirm('Đăng xuất khỏi tài khoản Google?')) return;
+  googleUser = null;
+  localStorage.removeItem('viGiaDinh_googleUser');
+  // Disconnect Firebase
+  fbListeners.forEach(unsub => { try { unsub(); } catch(e){} });
+  fbListeners = []; fbDb = null; fbApp = null; fbFamilyId = null; fbConnected = false;
+  localStorage.removeItem('viGiaDinh_fbConfig');
+  localStorage.removeItem('viGiaDinh_fbFamily');
+  toast('👋 Đã đăng xuất', 2500);
+  updateFirebaseStatusUI(false);
+  renderSettingsScreen();
+}
+
+// ============================================================
+// FIREBASE SECURITY RULES GUIDE (shown in settings)
+// ============================================================
+function showSecurityRulesGuide() {
+  // Populate current user's UID in the modal
+  const uidEl = document.getElementById('rules-my-uid');
+  if (uidEl) {
+    const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
+    if (gUser?.uid) {
+      uidEl.textContent = gUser.uid;
+      uidEl.style.color = 'var(--primary-dark)';
+    } else {
+      uidEl.textContent = '⚠️ Chưa đăng nhập Google — đăng nhập trước để lấy UID';
+      uidEl.style.color = 'var(--warning)';
+    }
+  }
+  openModal('modal-firebase-rules');
+}
+
+function copyMyUID() {
+  const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
+  if (!gUser?.uid) { toast('⚠️ Chưa đăng nhập Google', 2000); return; }
+  navigator.clipboard?.writeText(gUser.uid).then(() => toast('📋 Đã copy UID!', 2000));
+}
+
+// ============================================================
+// FIRESTORE SYNC (Cloud Firestore — thay thế Realtime Database)
+// ============================================================
+let fbApp = null, fbDb = null;       // fbDb = Firestore instance
+let fbListeners = [];                // unsubscribe functions
+let fbConfig = null;
+let fbFamilyId = null;
+let fbConnected = false;
+let fbSuppressRemoteUpdate = false;
+
+// ── Load Firebase SDK (App + Firestore) ──────────────────────
+async function loadFirebaseSDK() {
+  if (window.__fbLoaded) return true;
+  try {
+    const [appMod, fsMod] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+    window.fbSDK  = { ...appMod };
+    window.fsSDK  = { ...fsMod };   // Firestore functions live here
+    window.__fbLoaded = true;
+    return true;
+  } catch(e) {
+    console.error('Firebase SDK load error:', e);
+    return false;
+  }
+}
+
+// ── Register current user's UID into members sub-collection ──
+// This is what makes UID-based security rules work automatically.
+async function registerMemberInFirestore(firebaseUser) {
+  if (!fbDb || !fbFamilyId || !firebaseUser) return;
+  try {
+    const memberDoc = window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'members', firebaseUser.uid);
+    await window.fsSDK.setDoc(memberDoc, {
+      uid:         firebaseUser.uid,
+      displayName: firebaseUser.displayName || state.currentUser,
+      email:       firebaseUser.email || '',
+      photoURL:    firebaseUser.photoURL || '',
+      role:        state.currentUser,   // 'husband' | 'wife'
+      joinedAt:    Date.now()
+    }, { merge: true });
+    console.log('✅ Member registered:', firebaseUser.uid);
+  } catch(e) {
+    // permission-denied here means rules are not yet updated
+    if (e.code === 'permission-denied') {
+      console.warn('Member registration blocked — rules may not have "members" write exception yet');
+    } else {
+      console.error('registerMember error:', e);
+    }
+  }
+}
+
+// ── Load and display family members in settings ───────────────
+async function loadFamilyMembers() {
+  if (!fbDb || !fbFamilyId) return;
+  const listEl = document.getElementById('firebase-members-list');
+  if (!listEl) return;
+  listEl.innerHTML = '<div style="font-size:12px;color:var(--text3);font-style:italic">Đang tải...</div>';
+  try {
+    const { getDocs, collection } = window.fsSDK;
+    const snap = await getDocs(collection(fbDb, 'families', fbFamilyId, 'members'));
+    if (snap.empty) {
+      listEl.innerHTML = '<div style="font-size:12px;color:var(--text3)">Chưa có thành viên nào</div>';
+      return;
+    }
+    const myUid = googleUser?.uid || JSON.parse(localStorage.getItem('viGiaDinh_googleUser') || '{}')?.uid;
+    listEl.innerHTML = snap.docs.map(d => {
+      const m = d.data();
+      const isMe = m.uid === myUid;
+      const roleLabel = m.role === 'husband' ? '👨 Chồng' : '👩 Vợ';
+      const avatar = m.photoURL
+        ? `<img src="${m.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid ${isMe ? 'var(--primary)' : 'var(--border)'}" onerror="this.style.display='none'">`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary-dark);border:2px solid ${isMe ? 'var(--primary)' : 'var(--border)'}">${(m.displayName||'?')[0].toUpperCase()}</div>`;
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          ${avatar}
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px">
+              ${m.displayName || 'Không rõ'}
+              ${isMe ? '<span style="font-size:10px;background:var(--primary-dim);color:var(--primary-dark);padding:1px 7px;border-radius:999px;font-weight:800">Bạn</span>' : ''}
+            </div>
+            <div style="font-size:11px;color:var(--text3)">${roleLabel} · ${m.email || ''}</div>
+            <div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:var(--text3);margin-top:2px;word-break:break-all">${m.uid}</div>
+          </div>
+          ${isMe ? `<button onclick="copyMyUID()" style="background:none;border:none;cursor:pointer;color:var(--primary);padding:4px" title="Copy UID"><span class="material-symbols-rounded" style="font-size:18px">content_copy</span></button>` : ''}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    listEl.innerHTML = `<div style="font-size:12px;color:var(--expense)">Lỗi tải thành viên: ${e.code === 'permission-denied' ? 'Cần cập nhật Security Rules' : e.message}</div>`;
+  }
+}
+
+function settingsDocRef() { return window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'settings', 'config'); }
+
+// ── Ensure user is authenticated with Firebase Auth ──────────
+// Returns Firebase user object, or null if not signed in
+async function ensureFirebaseAuth(fbApp) {
+  await loadFirebaseAuth();
+  const auth = window.fbAuth.getAuth(fbApp);
+
+  // Already signed in?
+  if (auth.currentUser) return auth.currentUser;
+
+  // Try to wait for auth state to restore (up to 3s)
+  return new Promise((resolve) => {
+    const unsub = window.fbAuth.onAuthStateChanged(auth, (user) => {
+      unsub();
+      resolve(user);
+    });
+    setTimeout(() => { unsub(); resolve(null); }, 3000);
+  });
+}
+
+// ── Sign in with Google using a given Firebase app ───────────
+async function signInWithFirebaseGoogle(fbApp) {
+  await loadFirebaseAuth();
+  const auth = window.fbAuth.getAuth(fbApp);
+  const provider = new window.fbAuth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const result = await window.fbAuth.signInWithPopup(auth, provider);
+  return result.user;
+}
+
+// ── Connect to Firestore ──────────────────────────────────────
+async function connectFirebase() {
+  const apiKey    = document.getElementById('fb-api-key').value.trim();
+  const projectId = document.getElementById('fb-project-id').value.trim();
+  const appId     = document.getElementById('fb-app-id').value.trim();
+  const familyId  = document.getElementById('fb-family-id').value.trim().replace(/\s+/g,'-');
+
+  const errEl = document.getElementById('fb-connect-error');
+  errEl.style.display = 'none';
+
+  if (!apiKey || !projectId || !appId || !familyId) {
+    errEl.textContent = '⚠️ Vui lòng điền: API Key, Project ID, App ID và Mã gia đình.';
+    errEl.style.display = 'flex'; return;
+  }
+
+  const btn = document.getElementById('fb-connect-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Đang tải SDK...';
+
+  const loaded = await loadFirebaseSDK();
+  if (!loaded) {
+    errEl.textContent = '❌ Không tải được Firebase SDK. Kiểm tra kết nối internet.';
+    errEl.style.display = 'flex';
+    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Kết nối!';
+    return;
+  }
+
+  try {
+    const config = { apiKey, projectId, appId };
+    const apps = window.fbSDK.getApps();
+    fbApp = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(config);
+
+    // ── BƯỚC QUAN TRỌNG: Đăng nhập Google để có auth token ──
+    btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Đang xác thực Google...';
+
+    let firebaseUser = await ensureFirebaseAuth(fbApp);
+
+    if (!firebaseUser) {
+      // Not signed in yet — trigger Google popup
+      try {
+        btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Mở cửa sổ Google...';
+        firebaseUser = await signInWithFirebaseGoogle(fbApp);
+      } catch(authErr) {
+        if (authErr.code === 'auth/popup-blocked') {
+          errEl.innerHTML = '❌ Trình duyệt chặn popup đăng nhập.<br/>Hãy <b>cho phép popup</b> cho trang này rồi thử lại.';
+        } else if (authErr.code === 'auth/popup-closed-by-user') {
+          errEl.textContent = '⚠️ Bạn đã đóng cửa sổ đăng nhập Google. Vui lòng thử lại.';
+        } else {
+          errEl.textContent = `❌ Lỗi xác thực: ${authErr.message}`;
+        }
+        errEl.style.display = 'flex';
+        btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Thử lại';
+        return;
+      }
+    }
+
+    // Lưu thông tin Google user
+    googleUser = {
+      uid: firebaseUser.uid,
+      displayName: firebaseUser.displayName,
+      email: firebaseUser.email,
+      photoURL: firebaseUser.photoURL
+    };
+    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+    updateHeaderAvatar();
+
+    // ── Kết nối Firestore ────────────────────────────────────
+    btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Kết nối Firestore...';
+
+    fbDb = window.fsSDK.getFirestore(fbApp);
+    fbFamilyId = familyId;
+    fbConfig = config;
+
+    // Test write — sẽ báo lỗi permission-denied nếu rules sai
+    await window.fsSDK.setDoc(
+      window.fsSDK.doc(fbDb, 'families', familyId, 'settings', '_ping'),
+      { ts: Date.now(), by: state.currentUser, uid: firebaseUser.uid },
+      { merge: true }
+    );
+
+    localStorage.setItem('viGiaDinh_fbConfig', JSON.stringify(config));
+    localStorage.setItem('viGiaDinh_fbFamily', familyId);
+
+    // ── Ghi UID vào members (cho UID-based rules) ────────────
+    await registerMemberInFirestore(firebaseUser);
+
+    startFirebaseListeners();
+
+    document.getElementById('fb-success-family-id').textContent = familyId;
+    fbGoStep(5);
+    updateFirebaseStatusUI(true);
+    toast(`🔥 Xin chào ${firebaseUser.displayName}! Firestore đã kết nối.`, 3500);
+
+    await uploadLocalDataToFirebase();
+
+  } catch(e) {
+    console.error('Firestore connect error:', e);
+    let msg = e.message;
+    let hint = '';
+    if (e.code === 'permission-denied') {
+      hint = `<br/><br/>🔒 <b>Lỗi Security Rules!</b> Firestore từ chối ghi vì bạn đang dùng <b>production mode</b>.<br/>
+              Vào <b>Firebase Console → Firestore → Rules</b> và dán rules sau:<br/>
+              <code style="background:rgba(0,0,0,.1);padding:4px 8px;border-radius:6px;font-size:11px;display:block;margin-top:8px">
+              rules_version = '2';<br>
+              service cloud.firestore {<br>
+              &nbsp;&nbsp;match /databases/{db}/documents {<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;match /families/{fId}/{doc=**} {<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read, write: if request.auth != null;<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+              &nbsp;&nbsp;}<br>
+              }</code>`;
+    } else if (e.code === 'not-found' || msg?.includes('not-found')) {
+      hint = ' — Project ID có thể sai, hoặc Firestore chưa được bật.';
+    } else if (e.code === 'auth/invalid-api-key' || msg?.includes('api-key')) {
+      hint = ' — API Key không hợp lệ.';
+    }
+    errEl.innerHTML = `❌ Kết nối thất bại: ${msg}${hint}`;
+    errEl.style.display = 'flex';
+    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Thử lại';
+  }
+}
+
+// ── Realtime listeners (onSnapshot) ──────────────────────────
+function startFirebaseListeners() {
+  if (!fbDb || !fbFamilyId) return;
+  fbListeners.forEach(unsub => { try { unsub(); } catch(e){} });
+  fbListeners = [];
+
+  const { onSnapshot, query, orderBy } = window.fsSDK;
+
+  // 1. Listen to transactions collection
+  const txQ = query(txCol(), orderBy('date', 'desc'));
+  const txUnsub = onSnapshot(txQ, (snap) => {
+    if (fbSuppressRemoteUpdate) return;
+    const remoteTxs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    state.transactions = remoteTxs;
+    saveState();
+    refreshAllScreens();
+    updateSyncIndicator('synced');
+  }, (err) => {
+    console.error('Firestore tx listener error:', err);
+    updateSyncIndicator('offline');
+  });
+  fbListeners.push(txUnsub);
+
+  // 2. Listen to settings document
+  const settUnsub = onSnapshot(settingsDocRef(), (snap) => {
+    if (fbSuppressRemoteUpdate) return;
+    const s = snap.data();
+    if (s && s.monthlyBudget && s._updatedBy !== state.currentUser) {
+      state.monthlyBudget = s.monthlyBudget;
+      if (s.categoryBudgets) state.categoryBudgets = s.categoryBudgets;
+      saveState();
+      renderBudgetScreen();
+      renderHome();
+    }
+  });
+  fbListeners.push(settUnsub);
+
+  fbConnected = true;
+  updateSyncIndicator('synced');
+}
+
+// ── Upload all local data on first connect ────────────────────
+async function uploadLocalDataToFirebase() {
+  if (!fbDb || !fbFamilyId || state.transactions.length === 0) return;
+  try {
+    fbSuppressRemoteUpdate = true;
+    const { writeBatch, doc } = window.fsSDK;
+    // Firestore batch: max 500 writes per batch
+    const chunks = [];
+    for (let i = 0; i < state.transactions.length; i += 400) {
+      chunks.push(state.transactions.slice(i, i + 400));
+    }
+    for (const chunk of chunks) {
+      const batch = writeBatch(fbDb);
+      chunk.forEach(tx => {
+        batch.set(doc(fbDb, 'families', fbFamilyId, 'transactions', tx.id), tx);
+      });
+      await batch.commit();
+    }
+    fbSuppressRemoteUpdate = false;
+    toast(`☁️ Đã tải lên ${state.transactions.length} giao dịch`, 2500);
+  } catch(e) {
+    fbSuppressRemoteUpdate = false;
+    console.error('Firestore upload error:', e);
+  }
+}
+
+// ── Push / Delete / Settings ──────────────────────────────────
+function fbPushTx(tx) {
+  if (!fbDb || !fbFamilyId) return;
+  updateSyncIndicator('syncing');
+  window.fsSDK.setDoc(
+    window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'transactions', tx.id),
+    tx
+  ).then(() => updateSyncIndicator('synced'))
+   .catch(e => { console.error('fbPushTx:', e); updateSyncIndicator('offline'); });
+}
+
+function fbDeleteTx(id) {
+  if (!fbDb || !fbFamilyId) return;
+  updateSyncIndicator('syncing');
+  window.fsSDK.deleteDoc(
+    window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'transactions', id)
+  ).then(() => updateSyncIndicator('synced'))
+   .catch(e => console.error('fbDeleteTx:', e));
+}
+
+function fbPushSettings() {
+  if (!fbDb || !fbFamilyId) return;
+  window.fsSDK.setDoc(settingsDocRef(), {
+    monthlyBudget:   state.monthlyBudget,
+    categoryBudgets: state.categoryBudgets,
+    husbandName:     state.husbandName,
+    wifeName:        state.wifeName,
+    _updatedBy:      state.currentUser,
+    _updatedAt:      Date.now()
+  }, { merge: true }).catch(e => console.error('fbPushSettings:', e));
+}
+
+// ── Force pull from cloud ─────────────────────────────────────
+async function forceSyncFromCloud() {
+  if (!fbDb || !fbFamilyId) { toast('⚠️ Chưa kết nối Firestore', 2000); return; }
+  toast('⏳ Đang tải dữ liệu từ Cloud...', 2000);
+  try {
+    const { getDocs, query, orderBy } = window.fsSDK;
+    const snap = await getDocs(query(txCol(), orderBy('date', 'desc')));
+    state.transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    saveState();
+    refreshAllScreens();
+    toast(`✅ Đồng bộ xong: ${state.transactions.length} giao dịch`, 2500);
+  } catch(e) {
+    if (e.code === 'permission-denied') toast('🔒 Lỗi quyền truy cập — kiểm tra Security Rules', 3500);
+    else toast('❌ Lỗi: ' + e.message, 3000);
+  }
+}
+
+// ── Disconnect ────────────────────────────────────────────────
+function disconnectFirebase() {
+  if (!confirm('Ngắt kết nối Firestore?\nDữ liệu trên máy vẫn được giữ.')) return;
+  fbListeners.forEach(unsub => { try { unsub(); } catch(e){} });
+  fbListeners = [];
+  fbDb = null; fbApp = null; fbFamilyId = null; fbConnected = false;
+  localStorage.removeItem('viGiaDinh_fbConfig');
+  localStorage.removeItem('viGiaDinh_fbFamily');
+  updateFirebaseStatusUI(false);
+  toast('🔌 Đã ngắt kết nối Firestore', 2500);
+}
+
+// ── Status UI ─────────────────────────────────────────────────
+function updateFirebaseStatusUI(connected) {
+  const dot    = document.getElementById('firebase-status-dot');
+  const label  = document.getElementById('firebase-status-label');
+  const connUI = document.getElementById('firebase-connected-ui');
+  const setupUI= document.getElementById('firebase-setup-ui');
+  if (!dot) return;
+  if (connected) {
+    dot.style.background = 'var(--income)';
+    dot.style.boxShadow  = '0 0 0 3px rgba(16,185,129,.2)';
+    label.textContent    = '🟢 Firestore đang đồng bộ';
+    label.style.color    = 'var(--income)';
+    connUI.style.display = '';
+    setupUI.style.display= 'none';
+    const fid = document.getElementById('firebase-family-id-display');
+    if (fid) fid.textContent = `Mã gia đình: ${fbFamilyId}`;
+    // Auto-load members list
+    setTimeout(loadFamilyMembers, 1500);
+  } else {
+    dot.style.background = 'var(--border)';
+    dot.style.boxShadow  = '';
+    label.textContent    = 'Chưa kết nối';
+    label.style.color    = 'var(--text3)';
+    connUI.style.display = 'none';
+    setupUI.style.display= '';
+  }
+}
+
+function updateSyncIndicator(state_) {
+  let ind = document.getElementById('sync-indicator');
+  if (!ind) {
+    ind = document.createElement('div');
+    ind.id = 'sync-indicator';
+    ind.style.cssText = 'position:fixed;top:16px;right:16px;z-index:500;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;transition:all .3s;pointer-events:none;opacity:0';
+    document.body.appendChild(ind);
+  }
+  if (state_ === 'syncing') {
+    ind.style.background = '#fef3c7'; ind.style.color = '#92400e';
+    ind.innerHTML = '<span class="material-symbols-rounded" style="font-size:14px;animation:spin 1s linear infinite">sync</span> Đang đồng bộ...';
+    ind.style.opacity = '1';
+  } else if (state_ === 'synced') {
+    ind.style.background = '#d1fae5'; ind.style.color = '#065f46';
+    ind.innerHTML = '<span class="material-symbols-rounded" style="font-size:14px">cloud_done</span> Đã đồng bộ';
+    ind.style.opacity = '1';
+    setTimeout(() => { ind.style.opacity = '0'; }, 2500);
+  } else if (state_ === 'offline') {
+    ind.style.background = '#fee2e2'; ind.style.color = '#991b1b';
+    ind.innerHTML = '<span class="material-symbols-rounded" style="font-size:14px">cloud_off</span> Offline';
+    ind.style.opacity = '1';
+  } else {
+    ind.style.opacity = '0';
+  }
+}
+
+function refreshAllScreens() {
+  renderHome();
+  if (currentTab === 'transactions') renderTxScreen();
+  if (currentTab === 'budget')       renderBudgetScreen();
+  if (currentTab === 'reports')      renderReportScreen();
+}
+
+function fbGoStep(n) {
+  for (let i = 0; i <= 5; i++) {
+    const el = document.getElementById('fb-step-'+i);
+    if (el) el.style.display = i === n ? '' : 'none';
+  }
+}
+
+function copyFamilyId() {
+  const id = document.getElementById('fb-success-family-id').textContent;
+  navigator.clipboard?.writeText(id).then(() => toast('📋 Đã copy mã gia đình!'));
+}
+
+// ── Auto-reconnect on app start ───────────────────────────────
+async function autoReconnectFirebase() {
+  const savedConfig = localStorage.getItem('viGiaDinh_fbConfig');
+  const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
+  if (!savedConfig || !savedFamily) return;
+  try {
+    const config = JSON.parse(savedConfig);
+    const loaded = await loadFirebaseSDK();
+    if (!loaded) return;
+
+    const apps = window.fbSDK.getApps();
+    fbApp = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(config);
+
+    // Restore Firebase Auth session (Firebase persists this automatically)
+    const firebaseUser = await ensureFirebaseAuth(fbApp);
+    if (firebaseUser) {
+      // Update googleUser from Firebase Auth (fresher than localStorage)
+      googleUser = {
+        uid: firebaseUser.uid,
+        displayName: firebaseUser.displayName,
+        email: firebaseUser.email,
+        photoURL: firebaseUser.photoURL
+      };
+      localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+      updateHeaderAvatar();
+    }
+
+    fbDb = window.fsSDK.getFirestore(fbApp);
+    fbFamilyId = savedFamily;
+    fbConfig   = config;
+
+    // Re-register member UID (idempotent — merge:true so safe to call every launch)
+    if (firebaseUser) await registerMemberInFirestore(firebaseUser);
+
+    startFirebaseListeners();
+    updateFirebaseStatusUI(true);
+    console.log('✅ Firestore auto-reconnected for family:', savedFamily,
+                firebaseUser ? `as ${firebaseUser.email}` : '(no auth)');
+  } catch(e) {
+    console.warn('Firestore auto-reconnect failed:', e.message);
+  }
+}
+
+// CSS for spin animation
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}';
+document.head.appendChild(spinStyle);
+
+// ============================================================
+// PWA – SERVICE WORKER & INSTALL
+// ============================================================
+let pwaInstallPrompt = null;
+let pwaInstalled = false;
+
+function initPWA() {
+  // Detect standalone mode (already installed)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true
+    || document.referrer.includes('android-app://');
+
+  if (isStandalone) {
+    pwaInstalled = true;
+    document.getElementById('pwa-installed-card').style.display = '';
+    return;
+  }
+
+  // Detect iOS
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  // Detect Android / Chrome
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  // Show install card in settings
+  document.getElementById('pwa-install-card').style.display = '';
+
+  if (isIOS) {
+    document.getElementById('pwa-ios-hint').style.display = '';
+    document.getElementById('pwa-install-btn').style.display = 'none';
+    document.getElementById('pwa-android-hint').style.display = 'none';
+  } else if (isAndroid && !pwaInstallPrompt) {
+    document.getElementById('pwa-android-hint').style.display = '';
+  }
+
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+const CACHE = 'viGiaDinh-v1';
+const ASSETS = [self.location.href];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+    if (res && res.status === 200) {
+      const clone = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, clone));
+    }
+    return res;
+  }).catch(() => cached)));
+});
+    `;
+    const swBlob = new Blob([swCode], {type:'text/javascript'});
+    const swURL = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL, {scope: '/'}).then(reg => {
+      console.log('✅ PWA Service Worker registered');
+    }).catch(err => {
+      // SW may fail with blob URL in some browsers — that's OK, app still works offline via cache
+      console.log('SW note:', err.message);
+    });
+  }
+}
+
+// Listen for browser's beforeinstallprompt event (Chrome/Edge/Android)
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  pwaInstallPrompt = e;
+
+  // Show banner on home screen (dismiss if previously dismissed)
+  const dismissed = localStorage.getItem('viGiaDinh_pwaBannerDismissed');
+  if (!dismissed) {
+    document.getElementById('pwa-banner').style.display = '';
+  }
+
+  // Update install button in settings
+  const installCard = document.getElementById('pwa-install-card');
+  if (installCard) {
+    installCard.style.display = '';
+    document.getElementById('pwa-install-btn').style.display = '';
+    document.getElementById('pwa-android-hint').style.display = 'none';
+  }
+});
+
+// After install
+window.addEventListener('appinstalled', () => {
+  pwaInstalled = true;
+  pwaInstallPrompt = null;
+  document.getElementById('pwa-banner').style.display = 'none';
+  document.getElementById('pwa-install-card').style.display = 'none';
+  document.getElementById('pwa-installed-card').style.display = '';
+  localStorage.setItem('viGiaDinh_pwaInstalled', '1');
+  toast('🎉 Ứng dụng đã được cài đặt thành công!', 3500);
+});
+
+function triggerPWAInstall() {
+  if (pwaInstallPrompt) {
+    pwaInstallPrompt.prompt();
+    pwaInstallPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        toast('🎉 Đang cài đặt ứng dụng...', 2500);
+      } else {
+        toast('💡 Bạn có thể cài đặt bất cứ lúc nào từ Cài đặt', 3000);
+      }
+      pwaInstallPrompt = null;
+    });
+  } else {
+    // Show manual instructions
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS) {
+      toast('📱 Safari: Nhấn ⎙ → "Thêm vào Màn hình chính"', 4000);
+    } else {
+      toast('🤖 Chrome: Menu ⋮ → "Thêm vào màn hình chính"', 4000);
+    }
+    // Switch to settings to see full instructions
+    switchTab('settings');
+    setTimeout(() => {
+      const card = document.getElementById('pwa-install-card');
+      if (card) { card.scrollIntoView({behavior:'smooth', block:'center'}); }
+    }, 400);
+  }
+}
+
+function dismissPWABanner() {
+  document.getElementById('pwa-banner').style.display = 'none';
+  localStorage.setItem('viGiaDinh_pwaBannerDismissed', '1');
+}
+
+function copyRules(id) {
+  const txt = document.getElementById(id)?.textContent;
+  if (txt) navigator.clipboard?.writeText(txt).then(() => toast('📋 Đã copy rules!'));
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+  const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem('viGiaDinh_theme', t);
+  document.getElementById('theme-icon').textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+  if (reportTab === 'month') setTimeout(renderMonthReport, 50);
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+(function boot() {
+  // Theme
+  const savedTheme = localStorage.getItem('viGiaDinh_theme') || 'light';
+  document.documentElement.dataset.theme = savedTheme;
+  document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? 'light_mode' : 'dark_mode';
+
+  loadState();
+
+  // Restore Google user
+  const savedGUser = localStorage.getItem('viGiaDinh_googleUser');
+  if (savedGUser) { try { googleUser = JSON.parse(savedGUser); } catch(e){} }
+
+  const hasData = localStorage.getItem('viGiaDinh_v2');
+  const hasSeenLogin = localStorage.getItem('viGiaDinh_seenLogin');
+
+  if (!hasData && !hasSeenLogin) {
+    // First time ever — show login screen
+    document.getElementById('screen-login').style.display = 'flex';
+    localStorage.setItem('viGiaDinh_seenLogin', '1');
+  } else if (!hasData) {
+    // Seen login before but no data — go to setup
+    document.getElementById('screen-setup').style.display = 'flex';
+  } else {
+    // Has data — go straight to app
+    document.getElementById('main-app').style.display = 'flex';
+    txPeriodDate = new Date();
+    budgetPeriodDate = new Date();
+    reportPeriodDate = new Date();
+    initApp();
+  }
+
+  // Init PWA
+  setTimeout(initPWA, 800);
+  // Auto-reconnect Firebase
+  setTimeout(autoReconnectFirebase, 1200);
+})();
+</script>
+</body>
+</html>
