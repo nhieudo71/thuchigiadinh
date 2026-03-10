@@ -2948,7 +2948,7 @@ function openFirebaseSetup() {
   const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
   if (savedFamily) document.getElementById('fb-family-id').value = savedFamily;
 
-  openFirebaseSetup();
+  openModal('modal-firebase-setup');
 }
 
 function copyFamilyId() {
