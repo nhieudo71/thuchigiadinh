@@ -779,8 +779,8 @@ select.form-control{cursor:pointer}
         </div>
         <div id="firebase-setup-ui">
           <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">Kết nối Firebase để đồng bộ giao dịch <b>thời gian thực</b> giữa vợ và chồng — thay đổi hiện ngay trên cả hai điện thoại.</p>
-          <button class="btn btn-primary btn-full" onclick="openModal('modal-firebase-setup')">
-            <span class="material-symbols-rounded">bolt</span> Thiết lập Firebase ngay
+          <button class="btn btn-primary btn-full" onclick="openFirebaseSetup()">
+            <span class="material-symbols-rounded">bolt</span> Kết nối đồng bộ ngay
           </button>
         </div>
       </div>
@@ -810,11 +810,11 @@ select.form-control{cursor:pointer}
             <div style="font-size:12px;color:var(--text3)">Mở bằng Excel hoặc Sheets</div>
           </div>
         </div>
-        <div class="backup-option" onclick="openModal('modal-firebase-setup')" style="border:1.5px dashed var(--border)">
+        <div class="backup-option" onclick="openFirebaseSetup()" style="border:1.5px dashed var(--border)">
           <div class="backup-icon" style="background:#fff3e0;color:#f57c00"><span style="font-size:22px">🔥</span></div>
           <div>
             <div style="font-weight:700;font-size:14px">Firebase – Đồng bộ thời gian thực</div>
-            <div style="font-size:12px;color:var(--text3)">Xem phần Firebase bên dưới để thiết lập</div>
+            <div style="font-size:12px;color:var(--text3)">Đăng nhập Google + nhập Mã gia đình là xong</div>
           </div>
         </div>
       </div>
@@ -1027,149 +1027,61 @@ select.form-control{cursor:pointer}
   <div class="modal" style="max-height:95dvh">
     <div class="modal-drag"></div>
     <div class="modal-header">
-      <div class="modal-title">🔥 Thiết Lập Firebase</div>
+      <div class="modal-title">🔥 Kết Nối Đồng Bộ</div>
       <button class="modal-close" onclick="closeModal('modal-firebase-setup')"><span class="material-symbols-rounded">close</span></button>
     </div>
     <div class="modal-body" style="padding-bottom:32px">
-
-      <!-- Step tabs -->
       <div id="firebase-steps">
 
-        <!-- STEP 0: Intro -->
+        <!-- STEP 0: Google login + Family ID (main screen) -->
         <div id="fb-step-0">
-          <div style="text-align:center;padding:8px 0 20px">
+          <div style="text-align:center;padding:8px 0 24px">
             <div style="font-size:56px;margin-bottom:12px">🔥</div>
-            <div style="font-size:18px;font-weight:900;margin-bottom:8px">Firebase Realtime Sync</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.7">Đồng bộ giao dịch <b>tức thì</b> giữa điện thoại của bạn và người bạn đời. Miễn phí hoàn toàn.</div>
+            <div style="font-size:19px;font-weight:900;margin-bottom:8px">Đồng bộ cho Vợ &amp; Chồng</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.7">Thay đổi của một người hiện ngay trên điện thoại kia — <b>tức thì, miễn phí</b>.</div>
           </div>
-          <div style="display:grid;gap:10px;margin-bottom:24px">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
-              <span style="font-size:24px">⚡</span>
-              <div><b style="font-size:13px">Thời gian thực</b><div style="font-size:12px;color:var(--text3)">Thay đổi hiện ngay trong vài giây</div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
-              <span style="font-size:24px">🆓</span>
-              <div><b style="font-size:13px">Miễn phí</b><div style="font-size:12px;color:var(--text3)">Firebase free tier: 1GB lưu trữ, 10GB/tháng</div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:12px">
-              <span style="font-size:24px">📱</span>
-              <div><b style="font-size:13px">Mọi thiết bị</b><div style="font-size:12px;color:var(--text3)">Điện thoại, máy tính, iPad đều đồng bộ</div></div>
-            </div>
-          </div>
-          <button class="btn btn-primary btn-full" onclick="fbGoStep(1)">
-            Bắt đầu thiết lập <span class="material-symbols-rounded">arrow_forward</span>
-          </button>
-          <div style="margin-top:10px">
-            <div style="font-size:12px;color:var(--text3);text-align:center">Mất khoảng 5-10 phút · Cần tài khoản Google</div>
-          </div>
-        </div>
 
-        <!-- STEP 1: Create Firebase project -->
-        <div id="fb-step-1" style="display:none">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
-            <div style="font-size:16px;font-weight:800">Tạo Firebase Project</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-            <div class="alert alert-warning" style="margin:0">⏱️ Bước này mất khoảng 2-3 phút</div>
-            <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2)">
-              <b style="color:var(--text);display:block;margin-bottom:6px">Làm theo từng bước:</b>
-              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Nhấn nút <b>"Mở Firebase Console"</b> bên dưới</span></div>
-              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>Đăng nhập bằng <b>tài khoản Google</b></span></div>
-              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Nhấn <b>"Add project"</b> (hoặc "Tạo dự án")</span></div>
-              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Tên project: gõ <code style="background:var(--border);padding:1px 6px;border-radius:4px">vi-gia-dinh</code></span></div>
-              <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">5.</span><span>Nhấn <b>Continue</b> → tắt Google Analytics → <b>Create project</b></span></div>
-              <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">6.</span><span>Chờ tạo xong → nhấn <b>Continue</b></span></div>
+          <!-- User card (shown after Google login) -->
+          <div id="fb-user-card" style="display:none;background:var(--surface2);border-radius:14px;padding:14px;margin-bottom:20px;align-items:center;gap:12px">
+            <div id="fb-user-avatar" style="width:44px;height:44px;border-radius:50%;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--primary-dark);flex-shrink:0;overflow:hidden"></div>
+            <div style="flex:1;min-width:0">
+              <div id="fb-user-name" style="font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+              <div id="fb-user-email" style="font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
             </div>
+            <span class="auth-badge auth-badge-google" style="flex-shrink:0">Google ✓</span>
           </div>
-          <a href="https://console.firebase.google.com" target="_blank" class="btn btn-primary btn-full" style="text-decoration:none;margin-bottom:10px">
-            <span class="material-symbols-rounded">open_in_new</span> Mở Firebase Console
-          </a>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <button class="btn btn-outline" onclick="fbGoStep(0)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
-            <button class="btn btn-primary" onclick="fbGoStep(2)">Xong, tiếp theo <span class="material-symbols-rounded">arrow_forward</span></button>
-          </div>
-        </div>
 
-        <!-- STEP 2: Enable Firestore -->
-        <div id="fb-step-2" style="display:none">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
-            <div style="font-size:16px;font-weight:800">Bật Cloud Firestore</div>
-          </div>
-          <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2);margin-bottom:20px">
-            <b style="color:var(--text);display:block;margin-bottom:6px">Trong Firebase Console vừa mở:</b>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Menu trái → chọn <b>"Firestore Database"</b></span></div>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>Nhấn <b>"Create database"</b></span></div>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Chọn vùng: <b>asia-southeast1 (Singapore)</b> → Next</span></div>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Chọn <b>"Start in test mode"</b> → Enable</span></div>
-            <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">5.</span><span>Chờ vài giây cho Firestore khởi động</span></div>
-          </div>
-          <div class="alert alert-success" style="margin-bottom:16px"><span class="material-symbols-rounded">info</span> <span>Không cần copy Database URL — Firestore tự cấu hình qua Project ID</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <button class="btn btn-outline" onclick="fbGoStep(1)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
-            <button class="btn btn-primary" onclick="fbGoStep(3)">Xong, tiếp theo <span class="material-symbols-rounded">arrow_forward</span></button>
-          </div>
-        </div>
-
-        <!-- STEP 3: Register Web App & get config -->
-        <div id="fb-step-3" style="display:none">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
-            <div style="font-size:16px;font-weight:800">Lấy Firebase Config</div>
-          </div>
-          <div style="background:var(--surface2);border-radius:12px;padding:14px;font-size:13px;line-height:2;color:var(--text2);margin-bottom:20px">
-            <b style="color:var(--text);display:block;margin-bottom:6px">Đăng ký Web App:</b>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">1.</span><span>Nhấn biểu tượng <b>&lt;/&gt;</b> (Web) trên trang Project Overview</span></div>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">2.</span><span>App nickname: <b>vi-gia-dinh-web</b> → Register app</span></div>
-            <div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">3.</span><span>Bạn sẽ thấy đoạn code <b>firebaseConfig</b></span></div>
-            <div style="display:flex;gap:8px"><span style="color:var(--primary);font-weight:900;flex-shrink:0">4.</span><span>Copy các giá trị <b>apiKey</b>, <b>projectId</b>, <b>appId</b> vào bước tiếp theo</span></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
-            <button class="btn btn-outline btn-sm" onclick="fbGoStep(2)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
-            <button class="btn btn-primary btn-sm" onclick="fbGoStep(4)">Tôi có config rồi <span class="material-symbols-rounded">arrow_forward</span></button>
-          </div>
-        </div>
-
-        <!-- STEP 4: Enter config -->
-        <div id="fb-step-4" style="display:none">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
-            <div style="font-size:16px;font-weight:800">Nhập Thông Tin Kết Nối</div>
-          </div>
-          <div class="alert alert-warning" style="margin-bottom:16px">📋 Copy-paste chính xác từ Firebase Console, tránh gõ tay</div>
-          <div class="form-group">
-            <label class="form-label">API Key</label>
-            <input id="fb-api-key" class="form-control" placeholder="AIzaSy..." style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>apiKey: "..."</code> trong firebaseConfig</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Auth Domain <span style="font-size:10px;background:var(--expense-dim);color:var(--expense);padding:1px 6px;border-radius:4px;font-weight:700">Bắt buộc để đăng nhập Google</span></label>
-            <input id="fb-auth-domain" class="form-control" placeholder="ten-project.firebaseapp.com" style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>authDomain: "..."</code> — thường là <b>projectId.firebaseapp.com</b></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Project ID</label>
-            <input id="fb-project-id" class="form-control" placeholder="vi-gia-dinh" style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>projectId: "..."</code></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">App ID</label>
-            <input id="fb-app-id" class="form-control" placeholder="1:123456:web:abc..." style="font-family:'JetBrains Mono',monospace;font-size:13px"/>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Dòng <code>appId: "..."</code></div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Mã gia đình (Family ID)</label>
-            <input id="fb-family-id" class="form-control" placeholder="VD: nguyen-tran-2024" maxlength="40"/>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Cả hai người dùng phải nhập <b>cùng một mã</b> này. Tự đặt tên dễ nhớ, không dấu, không cách.</div>
-          </div>
-          <div id="fb-connect-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <button class="btn btn-outline" onclick="fbGoStep(3)"><span class="material-symbols-rounded">arrow_back</span> Quay lại</button>
-            <button class="btn btn-primary" id="fb-connect-btn" onclick="connectFirebase()">
-              <span class="material-symbols-rounded">bolt</span> Kết nối!
+          <!-- Step 1: Google login -->
+          <div id="fb-login-step" style="margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <div id="fb-step1-num" style="width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+              <div style="font-size:14px;font-weight:800">Đăng nhập Google</div>
+              <span id="fb-step1-done" style="display:none;margin-left:auto;color:var(--income);font-size:13px;font-weight:800">✓ Xong</span>
+            </div>
+            <button id="fb-google-btn" class="google-btn" onclick="fbSignInGoogle()" style="padding:12px 16px">
+              <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              Đăng nhập bằng Google
             </button>
           </div>
+
+          <!-- Step 2: Family ID -->
+          <div id="fb-family-step" style="margin-bottom:20px;opacity:.4;pointer-events:none;transition:opacity .3s">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <div style="width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+              <div style="font-size:14px;font-weight:800">Nhập Mã gia đình</div>
+            </div>
+            <div class="form-group" style="margin-bottom:8px">
+              <input id="fb-family-id" class="form-control" placeholder="VD: nguyen-tran-2024" maxlength="40" style="font-size:15px;font-weight:700;letter-spacing:.5px" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9\-_]/g,'')"/>
+              <div style="font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5">Tự đặt tên dễ nhớ — <b>cả hai vợ chồng nhập cùng mã này</b>. Chỉ gồm chữ thường, số, dấu gạch.</div>
+            </div>
+          </div>
+
+          <div id="fb-connect-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+
+          <button class="btn btn-primary btn-full" id="fb-connect-btn" onclick="connectFirebase()" disabled style="opacity:.5">
+            <span class="material-symbols-rounded">bolt</span> Bắt đầu đồng bộ
+          </button>
+          <div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:center">Miễn phí · Mã hoá bảo mật · Dữ liệu chỉ gia đình bạn</div>
         </div>
 
         <!-- STEP 5: Success -->
@@ -1177,20 +1089,20 @@ select.form-control{cursor:pointer}
           <div style="text-align:center;padding:16px 0 24px">
             <div style="font-size:64px;margin-bottom:12px;animation:pulse 1s ease">🎉</div>
             <div style="font-size:20px;font-weight:900;color:var(--income);margin-bottom:8px">Kết nối thành công!</div>
-            <div style="font-size:14px;color:var(--text2);line-height:1.7">Ứng dụng đang đồng bộ thời gian thực với Firebase. Chia sẻ <b>Mã gia đình</b> cho người bạn đời để cùng dùng chung.</div>
+            <div style="font-size:14px;color:var(--text2);line-height:1.7">Ứng dụng đang đồng bộ thời gian thực. Chia sẻ <b>Mã gia đình</b> cho người bạn đời để cùng dùng chung.</div>
           </div>
-          <div style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:12px;padding:16px;margin-bottom:20px">
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Mã gia đình của bạn</div>
+          <div style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Mã gia đình của bạn</div>
             <div style="display:flex;align-items:center;gap:10px">
-              <div id="fb-success-family-id" style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--primary-dark);flex:1"></div>
-              <button class="btn btn-sm btn-outline" onclick="copyFamilyId()" style="flex-shrink:0">
-                <span class="material-symbols-rounded" style="font-size:16px">content_copy</span>
+              <div id="fb-success-family-id" style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:900;color:var(--primary-dark);flex:1"></div>
+              <button class="btn btn-sm btn-outline" onclick="copyFamilyId()">
+                <span class="material-symbols-rounded" style="font-size:16px">content_copy</span> Copy
               </button>
             </div>
           </div>
-          <div class="alert alert-warning" style="margin-bottom:16px">
-            <span class="material-symbols-rounded" style="font-size:18px">info</span>
-            Người bạn đời cũng cần mở app → Cài đặt → Thiết lập Firebase → nhập <b>cùng config</b> và <b>cùng Mã gia đình</b>
+          <div class="alert alert-success" style="margin-bottom:16px">
+            <span class="material-symbols-rounded">person_add</span>
+            <div>Người bạn đời: mở app → <b>Cài đặt → Kết Nối Đồng Bộ</b> → đăng nhập Google → nhập <b>cùng mã gia đình</b> này</div>
           </div>
           <button class="btn btn-primary btn-full" onclick="closeModal('modal-firebase-setup')">
             <span class="material-symbols-rounded">check_circle</span> Hoàn tất
@@ -1307,6 +1219,18 @@ service cloud.firestore {
 <div id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap"></div>
 
 <script>
+// ============================================================
+// FIREBASE CONFIG — nhúng sẵn, người dùng không cần nhập
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyAgQJ62yn4fySAFb-zV_hZ2fDr0GI8VK8I",
+  authDomain:        "quan-ly-ban-hang-aba9c.firebaseapp.com",
+  projectId:         "quan-ly-ban-hang-aba9c",
+  storageBucket:     "quan-ly-ban-hang-aba9c.firebasestorage.app",
+  messagingSenderId: "286311813480",
+  appId:             "1:286311813480:web:ced37afa55c7e7053e86dd"
+};
+
 // ============================================================
 // STATE & STORAGE
 // ============================================================
@@ -2392,44 +2316,16 @@ async function signInWithGoogle() {
   btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`;
   errEl.style.display = 'none';
 
-  const savedConfig = localStorage.getItem('viGiaDinh_fbConfig');
-  if (!savedConfig) {
-    // No Firebase config yet — go to setup screen, wizard will prompt later
-    document.getElementById('screen-login').style.display = 'none';
-    const hasData = localStorage.getItem('viGiaDinh_v2');
-    if (hasData) {
-      document.getElementById('main-app').style.display = 'flex';
-      txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
-      initApp();
-      setTimeout(() => {
-        switchTab('settings');
-        setTimeout(() => openModal('modal-firebase-setup'), 500);
-        toast('👆 Nhập Firebase config để đăng nhập Google!', 4000);
-      }, 600);
-    } else {
-      document.getElementById('screen-setup').style.display = 'flex';
-    }
-    btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`;
-    return;
-  }
-
   try {
     await loadFirebaseSDK();
     await loadFirebaseAuth();
 
-    const config = JSON.parse(savedConfig);
     const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
-    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(config);
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
 
     const firebaseUser = await signInWithFirebaseGoogle(app);
 
-    googleUser = {
-      uid: firebaseUser.uid,
-      displayName: firebaseUser.displayName,
-      email: firebaseUser.email,
-      photoURL: firebaseUser.photoURL
-    };
+    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
     localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
 
     if (!localStorage.getItem('viGiaDinh_v2')) {
@@ -2448,9 +2344,9 @@ async function signInWithGoogle() {
   } catch(e) {
     console.error('Google sign-in error:', e);
     let msg = 'Đăng nhập thất bại. ';
-    if (e.code === 'auth/popup-blocked')        msg += 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
+    if (e.code === 'auth/popup-blocked')             msg += 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
     else if (e.code === 'auth/popup-closed-by-user') msg += 'Bạn đã đóng cửa sổ đăng nhập.';
-    else if (e.code === 'auth/network-request-failed') msg += 'Lỗi kết nối mạng.';
+    else if (e.code === 'auth/unauthorized-domain')  msg += 'Domain chưa được phép trong Firebase Console.';
     else msg += e.message;
     errEl.textContent = msg;
     errEl.style.display = 'flex';
@@ -2657,106 +2553,129 @@ async function signInWithFirebaseGoogle(fbApp) {
   return result.user;
 }
 
-// ── Connect to Firestore ──────────────────────────────────────
-async function connectFirebase() {
-  const apiKey     = document.getElementById('fb-api-key').value.trim();
-  const authDomain = document.getElementById('fb-auth-domain').value.trim();
-  const projectId  = document.getElementById('fb-project-id').value.trim();
-  const appId      = document.getElementById('fb-app-id').value.trim();
-  const familyId   = document.getElementById('fb-family-id').value.trim().replace(/\s+/g,'-');
-
-  // Auto-derive authDomain from projectId if user left it blank
-  const resolvedAuthDomain = authDomain || (projectId ? `${projectId}.firebaseapp.com` : '');
-
+// ── Sign in Google inside the setup modal ────────────────────
+async function fbSignInGoogle() {
+  const btn = document.getElementById('fb-google-btn');
   const errEl = document.getElementById('fb-connect-error');
   errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`;
 
-  if (!apiKey || !projectId || !appId || !familyId) {
-    errEl.textContent = '⚠️ Vui lòng điền: API Key, Auth Domain, Project ID, App ID và Mã gia đình.';
+  try {
+    const loaded = await loadFirebaseSDK();
+    if (!loaded) throw new Error('Không tải được Firebase SDK');
+
+    const apps = window.fbSDK.getApps();
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
+
+    // Try restoring existing session first
+    let firebaseUser = await ensureFirebaseAuth(app);
+    if (!firebaseUser) {
+      firebaseUser = await signInWithFirebaseGoogle(app);
+    }
+
+    // Save google user
+    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
+    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+    updateHeaderAvatar();
+
+    // Update modal UI to show logged-in state
+    const card = document.getElementById('fb-user-card');
+    document.getElementById('fb-user-name').textContent  = firebaseUser.displayName || firebaseUser.email;
+    document.getElementById('fb-user-email').textContent = firebaseUser.email;
+    const avatarEl = document.getElementById('fb-user-avatar');
+    if (firebaseUser.photoURL) {
+      avatarEl.innerHTML = `<img src="${firebaseUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatarEl.textContent = (firebaseUser.displayName || '?')[0].toUpperCase();
+    }
+    card.style.display = 'flex';
+
+    // Mark step 1 done, unlock step 2
+    document.getElementById('fb-step1-done').style.display = 'inline';
+    btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:18px;color:var(--income)">check_circle</span> Đã đăng nhập: ${firebaseUser.displayName}`;
+    btn.style.borderColor = 'var(--income)';
+    btn.style.color = 'var(--income)';
+    document.getElementById('fb-login-step').style.display = 'none';
+
+    const familyStep = document.getElementById('fb-family-step');
+    familyStep.style.opacity   = '1';
+    familyStep.style.pointerEvents = 'auto';
+
+    const connectBtn = document.getElementById('fb-connect-btn');
+    connectBtn.disabled = false;
+    connectBtn.style.opacity = '1';
+
+    // Pre-fill family ID if already saved
+    const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
+    if (savedFamily) document.getElementById('fb-family-id').value = savedFamily;
+
+    document.getElementById('fb-family-id').focus();
+
+  } catch(e) {
+    console.error('fbSignInGoogle error:', e);
+    let msg = '';
+    if (e.code === 'auth/popup-blocked')         msg = 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
+    else if (e.code === 'auth/popup-closed-by-user') msg = 'Bạn đã đóng cửa sổ đăng nhập.';
+    else if (e.code === 'auth/unauthorized-domain') msg = 'Domain chưa được phép. Thêm domain này vào Firebase Console → Authentication → Settings → Authorized domains.';
+    else msg = e.message;
+    errEl.textContent = '❌ ' + msg;
+    errEl.style.display = 'flex';
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`;
+  }
+}
+
+// ── Connect to Firestore (uses built-in config, just needs familyId) ─
+async function connectFirebase() {
+  const familyId = (document.getElementById('fb-family-id')?.value || '').trim().toLowerCase().replace(/[^a-z0-9\-_]/g, '');
+  const errEl    = document.getElementById('fb-connect-error');
+  errEl.style.display = 'none';
+
+  if (!familyId) {
+    errEl.textContent = '⚠️ Vui lòng nhập Mã gia đình.';
     errEl.style.display = 'flex'; return;
   }
 
   const btn = document.getElementById('fb-connect-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Đang tải SDK...';
-
-  const loaded = await loadFirebaseSDK();
-  if (!loaded) {
-    errEl.textContent = '❌ Không tải được Firebase SDK. Kiểm tra kết nối internet.';
-    errEl.style.display = 'flex';
-    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Kết nối!';
-    return;
-  }
+  btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Đang kết nối...';
 
   try {
-    const config = { apiKey, authDomain: resolvedAuthDomain, projectId, appId };
+    const loaded = await loadFirebaseSDK();
+    if (!loaded) throw new Error('Không tải được Firebase SDK. Kiểm tra kết nối internet.');
+
     const apps = window.fbSDK.getApps();
-    // If app already initialized with a different config, delete and reinitialize
-    if (apps.length > 0) {
-      const existingApp = window.fbSDK.getApp();
-      const existingOptions = existingApp.options;
-      if (existingOptions.projectId !== projectId) {
-        await window.fbSDK.deleteApp(existingApp);
-        fbApp = window.fbSDK.initializeApp(config);
-      } else {
-        fbApp = existingApp;
-      }
-    } else {
-      fbApp = window.fbSDK.initializeApp(config);
-    }
+    fbApp = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
 
-    // ── BƯỚC QUAN TRỌNG: Đăng nhập Google để có auth token ──
-    btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Đang xác thực Google...';
-
+    // Ensure Firebase Auth session is active
+    btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Xác thực...';
     let firebaseUser = await ensureFirebaseAuth(fbApp);
-
     if (!firebaseUser) {
-      // Not signed in yet — trigger Google popup
-      try {
-        btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Mở cửa sổ Google...';
-        firebaseUser = await signInWithFirebaseGoogle(fbApp);
-      } catch(authErr) {
-        if (authErr.code === 'auth/popup-blocked') {
-          errEl.innerHTML = '❌ Trình duyệt chặn popup đăng nhập.<br/>Hãy <b>cho phép popup</b> cho trang này rồi thử lại.';
-        } else if (authErr.code === 'auth/popup-closed-by-user') {
-          errEl.textContent = '⚠️ Bạn đã đóng cửa sổ đăng nhập Google. Vui lòng thử lại.';
-        } else {
-          errEl.textContent = `❌ Lỗi xác thực: ${authErr.message}`;
-        }
-        errEl.style.display = 'flex';
-        btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Thử lại';
-        return;
-      }
+      // Not signed in yet — do it now
+      firebaseUser = await signInWithFirebaseGoogle(fbApp);
+      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
+      localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+      updateHeaderAvatar();
     }
 
-    // Lưu thông tin Google user
-    googleUser = {
-      uid: firebaseUser.uid,
-      displayName: firebaseUser.displayName,
-      email: firebaseUser.email,
-      photoURL: firebaseUser.photoURL
-    };
-    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
-    updateHeaderAvatar();
-
-    // ── Kết nối Firestore ────────────────────────────────────
+    // Connect Firestore
     btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Kết nối Firestore...';
-
     fbDb = window.fsSDK.getFirestore(fbApp);
     fbFamilyId = familyId;
-    fbConfig = config;
+    fbConfig = FIREBASE_CONFIG;
 
-    // Test write — sẽ báo lỗi permission-denied nếu rules sai
+    // Ping test write
     await window.fsSDK.setDoc(
       window.fsSDK.doc(fbDb, 'families', familyId, 'settings', '_ping'),
       { ts: Date.now(), by: state.currentUser, uid: firebaseUser.uid },
       { merge: true }
     );
 
-    localStorage.setItem('viGiaDinh_fbConfig', JSON.stringify(config));
-    localStorage.setItem('viGiaDinh_fbFamily', familyId);
+    localStorage.setItem('viGiaDinh_fbConfig',  JSON.stringify(FIREBASE_CONFIG));
+    localStorage.setItem('viGiaDinh_fbFamily',  familyId);
 
-    // ── Ghi UID vào members (cho UID-based rules) ────────────
+    // Register UID in members (for security rules)
     await registerMemberInFirestore(firebaseUser);
 
     startFirebaseListeners();
@@ -2764,34 +2683,36 @@ async function connectFirebase() {
     document.getElementById('fb-success-family-id').textContent = familyId;
     fbGoStep(5);
     updateFirebaseStatusUI(true);
-    toast(`🔥 Xin chào ${firebaseUser.displayName}! Firestore đã kết nối.`, 3500);
-
+    toast(`🔥 Xin chào ${firebaseUser.displayName}! Đang đồng bộ...`, 3500);
     await uploadLocalDataToFirebase();
 
   } catch(e) {
-    console.error('Firestore connect error:', e);
+    console.error('connectFirebase error:', e);
     let msg = e.message;
     let hint = '';
     if (e.code === 'permission-denied') {
-      hint = `<br/><br/>🔒 <b>Lỗi Security Rules!</b> Firestore từ chối ghi vì bạn đang dùng <b>production mode</b>.<br/>
-              Vào <b>Firebase Console → Firestore → Rules</b> và dán rules sau:<br/>
-              <code style="background:rgba(0,0,0,.1);padding:4px 8px;border-radius:6px;font-size:11px;display:block;margin-top:8px">
-              rules_version = '2';<br>
-              service cloud.firestore {<br>
-              &nbsp;&nbsp;match /databases/{db}/documents {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;match /families/{fId}/{doc=**} {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allow read, write: if request.auth != null;<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-              &nbsp;&nbsp;}<br>
-              }</code>`;
-    } else if (e.code === 'not-found' || msg?.includes('not-found')) {
-      hint = ' — Project ID có thể sai, hoặc Firestore chưa được bật.';
-    } else if (e.code === 'auth/invalid-api-key' || msg?.includes('api-key')) {
-      hint = ' — API Key không hợp lệ.';
+      hint = `<br/><br/>🔒 <b>Lỗi Security Rules!</b> Vào <b>Firebase Console → Firestore → Rules</b> và dán:<br/>
+        <code style="background:rgba(0,0,0,.1);padding:6px 8px;border-radius:6px;font-size:10px;display:block;margin-top:6px;white-space:pre">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /families/{familyId}/{document=**} {
+      allow read, write: if request.auth != null
+        && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
     }
-    errEl.innerHTML = `❌ Kết nối thất bại: ${msg}${hint}`;
+    match /families/{familyId}/members/{userId} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read:  if request.auth != null
+        && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+    }
+  }
+}</code>`;
+    } else if (e.code === 'auth/unauthorized-domain') {
+      hint = '<br/>Thêm domain hiện tại vào <b>Firebase Console → Authentication → Settings → Authorized domains</b>';
+    }
+    errEl.innerHTML = `❌ ${msg}${hint}`;
     errEl.style.display = 'flex';
-    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Thử lại';
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-rounded">bolt</span> Thử lại';
   }
 }
 
@@ -2985,10 +2906,49 @@ function refreshAllScreens() {
 }
 
 function fbGoStep(n) {
-  for (let i = 0; i <= 5; i++) {
-    const el = document.getElementById('fb-step-'+i);
-    if (el) el.style.display = i === n ? '' : 'none';
+  // New modal only has step-0 and step-5
+  ['fb-step-0','fb-step-5'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const show = document.getElementById(n === 5 ? 'fb-step-5' : 'fb-step-0');
+  if (show) show.style.display = '';
+}
+
+// Pre-populate setup modal when opened
+function openFirebaseSetup() {
+  // Reset UI
+  document.getElementById('fb-connect-error').style.display = 'none';
+  fbGoStep(0);
+
+  // If already signed in to Google, pre-fill the user card
+  const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
+  if (gUser?.uid) {
+    document.getElementById('fb-user-name').textContent  = gUser.displayName || gUser.email;
+    document.getElementById('fb-user-email').textContent = gUser.email || '';
+    const avatarEl = document.getElementById('fb-user-avatar');
+    if (gUser.photoURL) {
+      avatarEl.innerHTML = `<img src="${gUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatarEl.textContent = (gUser.displayName || '?')[0].toUpperCase();
+    }
+    document.getElementById('fb-user-card').style.display = 'flex';
+    document.getElementById('fb-login-step').style.display = 'none';
+
+    const familyStep = document.getElementById('fb-family-step');
+    familyStep.style.opacity = '1';
+    familyStep.style.pointerEvents = 'auto';
+
+    const connectBtn = document.getElementById('fb-connect-btn');
+    connectBtn.disabled = false;
+    connectBtn.style.opacity = '1';
   }
+
+  // Pre-fill family ID if saved
+  const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
+  if (savedFamily) document.getElementById('fb-family-id').value = savedFamily;
+
+  openFirebaseSetup();
 }
 
 function copyFamilyId() {
@@ -2998,46 +2958,32 @@ function copyFamilyId() {
 
 // ── Auto-reconnect on app start ───────────────────────────────
 async function autoReconnectFirebase() {
-  const savedConfig = localStorage.getItem('viGiaDinh_fbConfig');
   const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
-  if (!savedConfig || !savedFamily) return;
+  if (!savedFamily) return;
   try {
-    const config = JSON.parse(savedConfig);
-    // Ensure authDomain is present (may be missing from older saved configs)
-    if (!config.authDomain && config.projectId) {
-      config.authDomain = `${config.projectId}.firebaseapp.com`;
-    }
-
     const loaded = await loadFirebaseSDK();
     if (!loaded) return;
 
     const apps = window.fbSDK.getApps();
-    fbApp = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(config);
+    fbApp = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
 
-    // Restore Firebase Auth session (Firebase persists this automatically)
+    // Restore Firebase Auth session (Firebase persists this in IndexedDB)
     const firebaseUser = await ensureFirebaseAuth(fbApp);
     if (firebaseUser) {
-      googleUser = {
-        uid: firebaseUser.uid,
-        displayName: firebaseUser.displayName,
-        email: firebaseUser.email,
-        photoURL: firebaseUser.photoURL
-      };
+      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
       localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
       updateHeaderAvatar();
     }
 
     fbDb = window.fsSDK.getFirestore(fbApp);
     fbFamilyId = savedFamily;
-    fbConfig   = config;
+    fbConfig = FIREBASE_CONFIG;
 
-    // Re-register member UID (idempotent — merge:true so safe to call every launch)
     if (firebaseUser) await registerMemberInFirestore(firebaseUser);
 
     startFirebaseListeners();
     updateFirebaseStatusUI(true);
-    console.log('✅ Firestore auto-reconnected for family:', savedFamily,
-                firebaseUser ? `as ${firebaseUser.email}` : '(no auth)');
+    console.log('✅ Firestore auto-reconnected:', savedFamily, firebaseUser ? `as ${firebaseUser.email}` : '(no auth)');
   } catch(e) {
     console.warn('Firestore auto-reconnect failed:', e.message);
   }
