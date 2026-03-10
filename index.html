@@ -2513,6 +2513,7 @@ async function loadFamilyMembers() {
   }
 }
 
+function txCol()        { return window.fsSDK.collection(fbDb, 'families', fbFamilyId, 'transactions'); }
 function settingsDocRef() { return window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'settings', 'config'); }
 
 // ── Ensure user is authenticated with Firebase Auth ──────────
