@@ -2461,25 +2461,16 @@ async function loadFirebaseSDK() {
 // This is what makes UID-based security rules work automatically.
 async function registerMemberInFirestore(firebaseUser) {
   if (!fbDb || !fbFamilyId || !firebaseUser) return;
-  try {
-    const memberDoc = window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'members', firebaseUser.uid);
-    await window.fsSDK.setDoc(memberDoc, {
-      uid:         firebaseUser.uid,
-      displayName: firebaseUser.displayName || state.currentUser,
-      email:       firebaseUser.email || '',
-      photoURL:    firebaseUser.photoURL || '',
-      role:        state.currentUser,   // 'husband' | 'wife'
-      joinedAt:    Date.now()
-    }, { merge: true });
-    console.log('✅ Member registered:', firebaseUser.uid);
-  } catch(e) {
-    // permission-denied here means rules are not yet updated
-    if (e.code === 'permission-denied') {
-      console.warn('Member registration blocked — rules may not have "members" write exception yet');
-    } else {
-      console.error('registerMember error:', e);
-    }
-  }
+  const memberDoc = window.fsSDK.doc(fbDb, 'families', fbFamilyId, 'members', firebaseUser.uid);
+  await window.fsSDK.setDoc(memberDoc, {
+    uid:         firebaseUser.uid,
+    displayName: firebaseUser.displayName || state.currentUser,
+    email:       firebaseUser.email || '',
+    photoURL:    firebaseUser.photoURL || '',
+    role:        state.currentUser,
+    joinedAt:    Date.now()
+  }, { merge: true });
+  console.log('✅ Member registered:', firebaseUser.uid);
 }
 
 // ── Load and display family members in settings ───────────────
@@ -2665,18 +2656,12 @@ async function connectFirebase() {
     fbFamilyId = familyId;
     fbConfig = FIREBASE_CONFIG;
 
-    // Ping test write
-    await window.fsSDK.setDoc(
-      window.fsSDK.doc(fbDb, 'families', familyId, 'settings', '_ping'),
-      { ts: Date.now(), by: state.currentUser, uid: firebaseUser.uid },
-      { merge: true }
-    );
+    // ── QUAN TRỌNG: Ghi UID vào members TRƯỚC — rules mới cho phép ──
+    // Đây là bước bootstrap: members/{uid} được phép write nếu uid == request.auth.uid
+    await registerMemberInFirestore(firebaseUser);
 
     localStorage.setItem('viGiaDinh_fbConfig',  JSON.stringify(FIREBASE_CONFIG));
     localStorage.setItem('viGiaDinh_fbFamily',  familyId);
-
-    // Register UID in members (for security rules)
-    await registerMemberInFirestore(firebaseUser);
 
     startFirebaseListeners();
 
@@ -2979,7 +2964,11 @@ async function autoReconnectFirebase() {
     fbFamilyId = savedFamily;
     fbConfig = FIREBASE_CONFIG;
 
-    if (firebaseUser) await registerMemberInFirestore(firebaseUser);
+    if (firebaseUser) {
+      try { await registerMemberInFirestore(firebaseUser); } catch(e) {
+        console.warn('autoReconnect: member register failed:', e.code);
+      }
+    }
 
     startFirebaseListeners();
     updateFirebaseStatusUI(true);
