@@ -229,10 +229,15 @@ select.form-control{cursor:pointer}
 .tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
 /* PERSON FILTER */
-.person-filter{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px}
+.person-filter{display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .person-filter::-webkit-scrollbar{display:none}
-.person-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;color:var(--text2)}
+.person-chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:inherit;color:var(--text2);flex-shrink:0}
 .person-chip.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary-dark)}
+.person-chip.active-expense{border-color:var(--expense);background:var(--expense-dim);color:var(--expense)}
+.person-chip.active-income{border-color:var(--income);background:var(--income-dim);color:var(--income)}
+.person-chip.cat-chip-filter{border-color:var(--border)}
+.person-chip.cat-chip-filter.active{border-color:var(--primary);background:var(--primary-dim);color:var(--primary-dark)}
+.filter-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;align-self:center;margin:0 2px}
 .avatar{width:24px;height:24px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
 .avatar-wife{background:var(--wife)}
 .avatar-husband{background:var(--husband)}
@@ -299,9 +304,9 @@ select.form-control{cursor:pointer}
 }
 
 /* GOOGLE LOGIN SCREEN */
-.login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--bg);position:relative;overflow:hidden}
-.login-screen::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.15),transparent 70%);pointer-events:none}
-.login-screen::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.1),transparent 70%);pointer-events:none}
+.login-screen{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 24px 40px;background:var(--bg);position:relative;overflow-y:auto;overflow-x:hidden}
+.login-screen::before{content:'';position:fixed;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.15),transparent 70%);pointer-events:none;z-index:0}
+.login-screen::after{content:'';position:fixed;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(13,204,156,.1),transparent 70%);pointer-events:none;z-index:0}
 .login-logo{width:88px;height:88px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));border-radius:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-size:44px;box-shadow:0 12px 40px rgba(13,204,156,.4);position:relative;z-index:1}
 .google-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px 20px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)}
 .google-btn:hover{border-color:#4285f4;box-shadow:0 4px 20px rgba(66,133,244,.2);transform:translateY(-1px)}
@@ -326,6 +331,35 @@ select.form-control{cursor:pointer}
 .auth-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
 .auth-badge-google{background:#e8f0fe;color:#1a73e8}
 .auth-badge-anon{background:var(--surface2);color:var(--text3)}
+
+/* EMAIL AUTH TABS */
+.auth-tab-bar{display:flex;background:var(--surface2);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
+.auth-tab{flex:1;padding:9px 4px;border:none;border-radius:9px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;color:var(--text3);background:transparent}
+.auth-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* PASSWORD INPUT TOGGLE */
+.password-wrap{position:relative}
+.password-wrap .toggle-pw{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center}
+.password-wrap .toggle-pw:hover{color:var(--primary)}
+
+/* STRENGTH BAR */
+.strength-bar-wrap{display:flex;gap:4px;margin-top:6px}
+.strength-seg{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background .3s}
+.strength-seg.weak{background:#f43f5e}
+.strength-seg.medium{background:#f59e0b}
+.strength-seg.strong{background:#10b981}
+.strength-label{font-size:11px;font-weight:700;margin-top:4px}
+
+/* FORGOT PW LINK */
+.forgot-link{background:none;border:none;color:var(--primary);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0}
+
+/* VERIFY EMAIL BANNER */
+.verify-banner{background:#fff3e0;border:1.5px solid #f59e0b;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+[data-theme="dark"] .verify-banner{background:#2b1e0a}
+
+/* LOADING SPINNER IN BTN */
+.btn-loading{pointer-events:none;opacity:.75}
+.btn-loading .spin-icon{animation:spin 1s linear infinite}
 </style>
 </head>
 <body>
@@ -336,30 +370,123 @@ select.form-control{cursor:pointer}
   <div style="position:relative;z-index:1;width:100%;max-width:360px;text-align:center">
     <div class="login-logo">💰</div>
     <h1 style="font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:8px">Ví Gia Đình</h1>
-    <p style="color:var(--text2);font-size:15px;margin-bottom:40px;line-height:1.6">Quản lý chi tiêu thông minh<br/>dành cho vợ chồng</p>
+    <p style="color:var(--text2);font-size:15px;margin-bottom:28px;line-height:1.6">Quản lý chi tiêu thông minh<br/>dành cho vợ chồng</p>
 
-    <!-- Google Sign In -->
-    <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
-      <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-      Đăng nhập bằng Google
-    </button>
+    <!-- Auth Method Tabs -->
+    <div class="auth-tab-bar" style="text-align:left">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Đăng nhập</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Đăng ký</button>
+    </div>
 
-    <div id="google-signin-error" class="alert alert-danger" style="display:none;margin-top:12px;text-align:left"></div>
+    <!-- ===== ĐĂNG NHẬP ===== -->
+    <div id="auth-login-panel" style="text-align:left">
+      <!-- Google Sign In -->
+      <button class="google-btn" id="google-signin-btn" onclick="signInWithGoogle()">
+        <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Đăng nhập bằng Google
+      </button>
 
-    <div class="divider-text" style="margin:20px 0">hoặc</div>
+      <div class="divider-text" style="margin:16px 0">hoặc dùng Email</div>
 
-    <button class="skip-btn" onclick="skipLogin()">Dùng không cần đăng nhập →</button>
+      <!-- Email Login Form -->
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="login-email" class="form-control" type="email" placeholder="email@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between;align-items:center">
+          <span>Mật khẩu</span>
+          <button class="forgot-link" onclick="showForgotPassword()">Quên mật khẩu?</button>
+        </label>
+        <div class="password-wrap">
+          <input id="login-password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signInWithEmail()"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('login-password',this)" tabindex="-1" type="button">
+            <span class="material-symbols-rounded" style="font-size:20px">visibility</span>
+          </button>
+        </div>
+      </div>
 
-    <div style="margin-top:32px;padding:16px;background:var(--surface);border-radius:14px;border:1px solid var(--border);text-align:left">
-      <div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Lợi ích khi đăng nhập Google</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Đồng bộ thời gian thực với Firebase</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Bảo mật dữ liệu theo từng gia đình</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Khôi phục dữ liệu khi đổi điện thoại</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Không cần nhập config thủ công</div>
+      <div id="login-email-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+      <div id="google-signin-error" class="alert alert-danger" style="display:none;margin-bottom:12px;text-align:left"></div>
+
+      <button class="btn btn-primary btn-full" id="email-login-btn" onclick="signInWithEmail()">
+        <span class="material-symbols-rounded">login</span> Đăng nhập
+      </button>
+    </div>
+
+    <!-- ===== ĐĂNG KÝ ===== -->
+    <div id="auth-register-panel" style="display:none;text-align:left">
+      <div class="form-group">
+        <label class="form-label">Họ tên</label>
+        <input id="reg-name" class="form-control" type="text" placeholder="Nguyễn Văn A" autocomplete="name" maxlength="40"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="reg-email" class="form-control" type="email" placeholder="email@example.com" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mật khẩu</label>
+        <div class="password-wrap">
+          <input id="reg-password" class="form-control" type="password" placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" oninput="checkPasswordStrength(this.value)"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('reg-password',this)" tabindex="-1" type="button">
+            <span class="material-symbols-rounded" style="font-size:20px">visibility</span>
+          </button>
+        </div>
+        <div class="strength-bar-wrap" id="strength-bars">
+          <div class="strength-seg" id="seg1"></div>
+          <div class="strength-seg" id="seg2"></div>
+          <div class="strength-seg" id="seg3"></div>
+          <div class="strength-seg" id="seg4"></div>
+        </div>
+        <div id="strength-label" class="strength-label" style="color:var(--text3)"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Xác nhận mật khẩu</label>
+        <div class="password-wrap">
+          <input id="reg-confirm" class="form-control" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpWithEmail()"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('reg-confirm',this)" tabindex="-1" type="button">
+            <span class="material-symbols-rounded" style="font-size:20px">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="reg-email-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+
+      <button class="btn btn-primary btn-full" id="email-reg-btn" onclick="signUpWithEmail()">
+        <span class="material-symbols-rounded">person_add</span> Tạo tài khoản
+      </button>
+
+      <div style="margin-top:14px;padding:14px;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Lợi ích khi đăng ký</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Đồng bộ thời gian thực với Firebase</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Bảo mật dữ liệu riêng tư cho gia đình</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--primary);font-weight:700">✓</span> Khôi phục dữ liệu khi đổi thiết bị</div>
+        </div>
       </div>
     </div>
-    <div style="margin-top:16px;font-size:11px;color:var(--text3)">Dữ liệu được mã hóa và bảo mật bởi Firebase</div>
+
+    <!-- ===== QUÊN MẬT KHẨU ===== -->
+    <div id="auth-forgot-panel" style="display:none;text-align:left">
+      <button onclick="switchAuthTab('login')" style="background:none;border:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;font-size:13px;font-weight:600;margin-bottom:16px;padding:0">
+        <span class="material-symbols-rounded" style="font-size:18px">arrow_back</span> Quay lại đăng nhập
+      </button>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px">🔑 Quên mật khẩu</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">Nhập email của bạn, chúng tôi sẽ gửi link đặt lại mật khẩu.</p>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="forgot-email" class="form-control" type="email" placeholder="email@example.com" onkeydown="if(event.key==='Enter')sendPasswordReset()"/>
+      </div>
+      <div id="forgot-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+      <div id="forgot-success" class="alert alert-success" style="display:none;margin-bottom:12px"></div>
+      <button class="btn btn-primary btn-full" id="forgot-btn" onclick="sendPasswordReset()">
+        <span class="material-symbols-rounded">send</span> Gửi email đặt lại
+      </button>
+    </div>
+
+    <div class="divider-text" style="margin:16px 0">hoặc</div>
+    <button class="skip-btn" onclick="skipLogin()">Dùng không cần đăng nhập →</button>
+    <div style="margin-top:12px;font-size:11px;color:var(--text3)">Dữ liệu được mã hóa và bảo mật bởi Firebase</div>
   </div>
 </div>
 
@@ -369,14 +496,14 @@ select.form-control{cursor:pointer}
   <h1>Ví Gia Đình</h1>
   <p>Thiết lập thông tin ban đầu để bắt đầu quản lý chi tiêu cùng nhau</p>
   <div style="width:100%;max-width:360px">
-    <!-- Google user info (shown if logged in) -->
-    <div id="setup-google-info" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:12px">
-      <img id="setup-google-avatar" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary)" src="" alt=""/>
-      <div>
+    <!-- User info (shown if logged in) -->
+    <div id="setup-google-info" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;align-items:center;gap:12px">
+      <div id="setup-auth-avatar" style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary);overflow:hidden;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;font-weight:800;color:var(--primary-dark)"></div>
+      <div style="flex:1;min-width:0">
         <div id="setup-google-name" style="font-weight:700;font-size:14px"></div>
         <div id="setup-google-email" style="font-size:12px;color:var(--text3)"></div>
       </div>
-      <span class="auth-badge auth-badge-google" style="margin-left:auto">Google ✓</span>
+      <span id="setup-auth-badge" class="auth-badge auth-badge-google" style="margin-left:auto;flex-shrink:0">Google ✓</span>
     </div>
     <div class="form-group">
       <label class="form-label">Tên của bạn (Chồng / Vợ)</label>
@@ -504,14 +631,19 @@ select.form-control{cursor:pointer}
         <span class="material-symbols-rounded">search</span>
       </button>
     </div>
-    <div style="padding:12px 20px 0;background:var(--surface);border-bottom:1px solid var(--border)">
+    <!-- Filter bar: no side padding here, handled by .person-filter itself -->
+    <div style="background:var(--surface);border-bottom:1px solid var(--border);padding-top:10px">
+      <!-- Row 1: Person / Type filters -->
       <div class="person-filter" id="tx-person-filter">
         <button class="person-chip active" data-filter="all" onclick="filterTx('all',this)">🏠 Tất cả</button>
-        <button class="person-chip" data-filter="husband" onclick="filterTx('husband',this)"><span class="avatar avatar-husband">H</span><span id="filter-husband-name">Chồng</span></button>
-        <button class="person-chip" data-filter="wife" onclick="filterTx('wife',this)"><span class="avatar avatar-wife">V</span><span id="filter-wife-name">Vợ</span></button>
+        <button class="person-chip" data-filter="husband" onclick="filterTx('husband',this)"><span class="avatar avatar-husband" style="width:20px;height:20px;font-size:11px">H</span><span id="filter-husband-name">Chồng</span></button>
+        <button class="person-chip" data-filter="wife" onclick="filterTx('wife',this)"><span class="avatar avatar-wife" style="width:20px;height:20px;font-size:11px">V</span><span id="filter-wife-name">Vợ</span></button>
+        <div class="filter-divider"></div>
         <button class="person-chip" data-filter="income" onclick="filterTx('income',this)">💚 Thu nhập</button>
         <button class="person-chip" data-filter="expense" onclick="filterTx('expense',this)">❤️ Chi tiêu</button>
       </div>
+      <!-- Row 2: Category filters (dynamic, shown only when expense/all) -->
+      <div class="person-filter" id="tx-cat-filter" style="padding-top:0;padding-bottom:10px"></div>
     </div>
     <div class="scroll-content" style="padding-bottom:24px" id="tx-list-container">
       <div class="period-nav" style="margin-top:4px">
@@ -589,6 +721,7 @@ select.form-control{cursor:pointer}
             <div class="stat-value" id="report-expense" style="color:var(--expense)">0 ₫</div>
           </div>
         </div>
+        <!-- Phân bổ chi tiêu chung -->
         <div class="card">
           <div class="section-header" style="margin-bottom:16px"><span class="section-title">Phân bổ chi tiêu</span></div>
           <div style="display:flex;align-items:center;justify-content:center;margin-bottom:20px">
@@ -596,13 +729,58 @@ select.form-control{cursor:pointer}
           </div>
           <div id="donut-legend"></div>
         </div>
+        <!-- Chi tiêu theo người -->
         <div class="card">
           <div class="section-title" style="margin-bottom:14px">Chi tiêu theo người</div>
           <div id="report-by-person"></div>
         </div>
+        <!-- Chi tiết từng người (collapsible) -->
+        <div id="report-person-husband-card" class="card" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;cursor:pointer" onclick="togglePersonDetail('husband')">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="avatar avatar-husband" style="width:32px;height:32px;font-size:14px">👨</div>
+              <span id="report-person-husband-title" class="section-title"></span>
+            </div>
+            <span class="material-symbols-rounded" id="chevron-husband" style="color:var(--text3);transition:transform .2s">expand_more</span>
+          </div>
+          <div id="report-person-husband-detail" style="display:none">
+            <div id="report-person-husband-donut" style="display:flex;justify-content:center;margin-bottom:16px">
+              <canvas id="donut-husband" width="160" height="160"></canvas>
+            </div>
+            <div id="report-person-husband-legend"></div>
+            <div id="report-person-husband-txlist" style="margin-top:14px"></div>
+          </div>
+        </div>
+        <div id="report-person-wife-card" class="card" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;cursor:pointer" onclick="togglePersonDetail('wife')">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="avatar avatar-wife" style="width:32px;height:32px;font-size:14px">👩</div>
+              <span id="report-person-wife-title" class="section-title"></span>
+            </div>
+            <span class="material-symbols-rounded" id="chevron-wife" style="color:var(--text3);transition:transform .2s">expand_more</span>
+          </div>
+          <div id="report-person-wife-detail" style="display:none">
+            <div id="report-person-wife-donut" style="display:flex;justify-content:center;margin-bottom:16px">
+              <canvas id="donut-wife" width="160" height="160"></canvas>
+            </div>
+            <div id="report-person-wife-legend"></div>
+            <div id="report-person-wife-txlist" style="margin-top:14px"></div>
+          </div>
+        </div>
+        <!-- Xu hướng tuần -->
         <div class="card">
           <div class="section-title" style="margin-bottom:14px">Xu hướng tuần</div>
-          <canvas id="bar-chart" width="360" height="140"></canvas>
+          <div style="position:relative;width:100%;overflow:hidden">
+            <canvas id="bar-chart" style="width:100%;height:160px;display:block"></canvas>
+          </div>
+          <div style="display:flex;gap:16px;justify-content:center;margin-top:10px">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--text2)">
+              <div style="width:10px;height:10px;border-radius:3px;background:#f43f5e"></div> Chi tiêu
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--text2)">
+              <div style="width:10px;height:10px;border-radius:3px;background:#0dcc9c"></div> Thu nhập
+            </div>
+          </div>
         </div>
       </div>
 
@@ -624,7 +802,17 @@ select.form-control{cursor:pointer}
         </div>
         <div class="card">
           <div class="section-title" style="margin-bottom:14px">Theo tháng trong năm</div>
-          <canvas id="year-bar-chart" width="360" height="180"></canvas>
+          <div style="position:relative;width:100%;overflow:hidden">
+            <canvas id="year-bar-chart" style="width:100%;height:180px;display:block"></canvas>
+          </div>
+          <div style="display:flex;gap:16px;justify-content:center;margin-top:10px">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--text2)">
+              <div style="width:10px;height:10px;border-radius:3px;background:#f43f5e"></div> Chi tiêu
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--text2)">
+              <div style="width:10px;height:10px;border-radius:3px;background:#0dcc9c"></div> Thu nhập
+            </div>
+          </div>
         </div>
         <div id="year-months-list"></div>
       </div>
@@ -673,23 +861,35 @@ select.form-control{cursor:pointer}
       <div class="card" id="settings-google-card">
         <div style="font-size:13px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px">Tài khoản Google</div>
         <div id="settings-google-signed-in" style="display:none">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
             <div id="settings-google-avatar-wrap" style="width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid var(--primary);flex-shrink:0;background:var(--primary-dim);display:flex;align-items:center;justify-content:center"></div>
             <div style="flex:1;min-width:0">
               <div id="settings-google-name" style="font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
               <div id="settings-google-email" style="font-size:12px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+              <div id="settings-auth-provider-badge" style="margin-top:4px"></div>
             </div>
-            <span class="auth-badge auth-badge-google">Google ✓</span>
+          </div>
+          <div id="settings-email-verify-hint" style="display:none;margin-bottom:10px">
+            <div class="alert alert-warning" style="margin:0;gap:8px">
+              <span class="material-symbols-rounded" style="font-size:18px;flex-shrink:0">mark_email_unread</span>
+              <div style="font-size:12px">Email chưa xác nhận.
+                <button onclick="resendVerifyEmail()" style="background:none;border:none;color:var(--warning);font-weight:700;cursor:pointer;padding:0;font-family:inherit;font-size:12px;text-decoration:underline">Gửi lại</button>
+              </div>
+            </div>
+          </div>
+          <div id="settings-change-password-ui" style="display:none;margin-bottom:8px">
+            <button class="btn btn-outline btn-full btn-sm" onclick="openModal('modal-change-password')">
+              <span class="material-symbols-rounded" style="font-size:16px">lock_reset</span> Đổi mật khẩu
+            </button>
           </div>
           <button class="btn btn-outline btn-full btn-sm" onclick="signOut()" style="color:var(--expense);border-color:var(--expense)">
             <span class="material-symbols-rounded" style="font-size:16px">logout</span> Đăng xuất
           </button>
         </div>
         <div id="settings-google-signed-out">
-          <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Đăng nhập Google để đồng bộ Firebase dễ dàng hơn và bảo mật hơn.</p>
-          <button class="btn btn-full google-btn" onclick="signInWithGoogle()" style="padding:10px 16px">
-            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-            Đăng nhập Google
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Đăng nhập để đồng bộ Firebase và bảo mật dữ liệu gia đình.</p>
+          <button class="btn btn-full btn-primary btn-sm" onclick="goToLoginScreen()" style="margin-bottom:8px">
+            <span class="material-symbols-rounded" style="font-size:16px">login</span> Đăng nhập / Đăng ký
           </button>
         </div>
       </div>
@@ -1007,6 +1207,24 @@ select.form-control{cursor:pointer}
   </div>
 </div>
 
+<!-- Category Detail Modal -->
+<div class="modal-overlay" id="modal-cat-detail">
+  <div class="modal" style="max-height:92dvh">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="cat-detail-title">Chi tiết danh mục</div>
+      <button class="modal-close" onclick="closeModal('modal-cat-detail')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body" style="padding-bottom:32px">
+      <!-- Summary stats -->
+      <div id="cat-detail-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px"></div>
+      <!-- Transaction list -->
+      <div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Giao dịch</div>
+      <div id="cat-detail-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- Search -->
 <div class="modal-overlay" id="modal-search">
   <div class="modal">
@@ -1041,22 +1259,27 @@ select.form-control{cursor:pointer}
             <div style="font-size:13px;color:var(--text2);line-height:1.7">Thay đổi của một người hiện ngay trên điện thoại kia — <b>tức thì, miễn phí</b>.</div>
           </div>
 
-          <!-- User card (shown after Google login) -->
+          <!-- User card (shown after login) -->
           <div id="fb-user-card" style="display:none;background:var(--surface2);border-radius:14px;padding:14px;margin-bottom:20px;align-items:center;gap:12px">
             <div id="fb-user-avatar" style="width:44px;height:44px;border-radius:50%;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--primary-dark);flex-shrink:0;overflow:hidden"></div>
             <div style="flex:1;min-width:0">
               <div id="fb-user-name" style="font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
               <div id="fb-user-email" style="font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
             </div>
-            <span class="auth-badge auth-badge-google" style="flex-shrink:0">Google ✓</span>
+            <span id="fb-user-badge" class="auth-badge auth-badge-google" style="flex-shrink:0">Google ✓</span>
           </div>
 
-          <!-- Step 1: Google login -->
+          <!-- Step 1: Auth login -->
           <div id="fb-login-step" style="margin-bottom:20px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
               <div id="fb-step1-num" style="width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
-              <div style="font-size:14px;font-weight:800">Đăng nhập Google</div>
+              <div style="font-size:14px;font-weight:800">Xác thực tài khoản</div>
               <span id="fb-step1-done" style="display:none;margin-left:auto;color:var(--income);font-size:13px;font-weight:800">✓ Xong</span>
+            </div>
+            <!-- Already logged in via email -->
+            <div id="fb-already-authed" style="display:none;padding:12px 14px;background:var(--income-dim);border:1.5px solid var(--income);border-radius:12px;display:none;align-items:center;gap:10px;margin-bottom:10px">
+              <span class="material-symbols-rounded" style="color:var(--income);font-size:22px;flex-shrink:0">check_circle</span>
+              <div style="font-size:13px;font-weight:700;color:var(--income)">Đã đăng nhập — bấm <b>Bắt đầu đồng bộ</b> để tiếp tục.</div>
             </div>
             <button id="fb-google-btn" class="google-btn" onclick="fbSignInGoogle()" style="padding:12px 16px">
               <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -1102,7 +1325,7 @@ select.form-control{cursor:pointer}
           </div>
           <div class="alert alert-success" style="margin-bottom:16px">
             <span class="material-symbols-rounded">person_add</span>
-            <div>Người bạn đời: mở app → <b>Cài đặt → Kết Nối Đồng Bộ</b> → đăng nhập Google → nhập <b>cùng mã gia đình</b> này</div>
+            <div>Người bạn đời: mở app → <b>Cài đặt → Kết Nối Đồng Bộ</b> → đăng nhập → nhập <b>cùng mã gia đình</b> này</div>
           </div>
           <button class="btn btn-primary btn-full" onclick="closeModal('modal-firebase-setup')">
             <span class="material-symbols-rounded">check_circle</span> Hoàn tất
@@ -1110,6 +1333,48 @@ select.form-control{cursor:pointer}
         </div>
 
       </div><!-- /firebase-steps -->
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-overlay" id="modal-change-password">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <div class="modal-title">🔑 Đổi mật khẩu</div>
+      <button class="modal-close" onclick="closeModal('modal-change-password')"><span class="material-symbols-rounded">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Mật khẩu hiện tại</label>
+        <div class="password-wrap">
+          <input id="chpw-current" class="form-control" type="password" placeholder="Mật khẩu hiện tại" autocomplete="current-password"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('chpw-current',this)" tabindex="-1" type="button"><span class="material-symbols-rounded" style="font-size:20px">visibility</span></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mật khẩu mới</label>
+        <div class="password-wrap">
+          <input id="chpw-new" class="form-control" type="password" placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" oninput="checkPasswordStrengthAlt(this.value)"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('chpw-new',this)" tabindex="-1" type="button"><span class="material-symbols-rounded" style="font-size:20px">visibility</span></button>
+        </div>
+        <div class="strength-bar-wrap" id="strength-bars-alt">
+          <div class="strength-seg" id="seg1a"></div><div class="strength-seg" id="seg2a"></div><div class="strength-seg" id="seg3a"></div><div class="strength-seg" id="seg4a"></div>
+        </div>
+        <div id="strength-label-alt" class="strength-label" style="color:var(--text3)"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Xác nhận mật khẩu mới</label>
+        <div class="password-wrap">
+          <input id="chpw-confirm" class="form-control" type="password" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password"/>
+          <button class="toggle-pw" onclick="togglePasswordVis('chpw-confirm',this)" tabindex="-1" type="button"><span class="material-symbols-rounded" style="font-size:20px">visibility</span></button>
+        </div>
+      </div>
+      <div id="chpw-error" class="alert alert-danger" style="display:none;margin-bottom:12px"></div>
+      <button class="btn btn-primary btn-full" id="chpw-btn" onclick="changePassword()">
+        <span class="material-symbols-rounded">lock_reset</span> Đổi mật khẩu
+      </button>
     </div>
   </div>
 </div>
@@ -1498,6 +1763,40 @@ function renderTxItem(t) {
 // ============================================================
 // TRANSACTIONS SCREEN
 // ============================================================
+let txCatFilter = null; // null = no cat filter, or category id string
+
+function renderCatFilterRow() {
+  const row = document.getElementById('tx-cat-filter');
+  if (!row) return;
+  // Show category chips for expense/all modes
+  const showCats = txFilter !== 'income';
+  if (!showCats) { row.innerHTML = ''; return; }
+
+  const txs = state.transactions.filter(t => t.date && t.date.startsWith(dateKey(txPeriodDate)) && t.type === 'expense');
+  const usedCatIds = [...new Set(txs.map(t => t.category))];
+  if (usedCatIds.length === 0) { row.innerHTML = ''; return; }
+
+  const chips = usedCatIds.map(cid => {
+    const c = getCatById(cid);
+    const active = txCatFilter === cid;
+    return `<button class="person-chip cat-chip-filter${active?' active':''}" onclick="filterTxByCat('${cid}',this)">${c.emoji} ${c.name}</button>`;
+  });
+  row.innerHTML = chips.join('');
+}
+
+function filterTxByCat(catId, btn) {
+  // Toggle: click same cat again → clear
+  if (txCatFilter === catId) {
+    txCatFilter = null;
+    document.querySelectorAll('#tx-cat-filter .person-chip').forEach(b => b.classList.remove('active'));
+  } else {
+    txCatFilter = catId;
+    document.querySelectorAll('#tx-cat-filter .person-chip').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+  renderTxScreen();
+}
+
 function renderTxScreen() {
   document.getElementById('tx-period-label').textContent = monthYear(txPeriodDate);
   const key = dateKey(txPeriodDate);
@@ -1506,20 +1805,55 @@ function renderTxScreen() {
   else if (txFilter === 'wife') txs = txs.filter(t=>t.owner==='wife');
   else if (txFilter === 'income') txs = txs.filter(t=>t.type==='income');
   else if (txFilter === 'expense') txs = txs.filter(t=>t.type==='expense');
+  if (txCatFilter) txs = txs.filter(t=>t.category===txCatFilter);
   txs.sort((a,b) => b.date.localeCompare(a.date));
+
+  renderCatFilterRow();
 
   const list = document.getElementById('tx-list');
   if (txs.length === 0) {
-    list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>Không có giao dịch</h3><p>Tháng này chưa có giao dịch nào</p></div>`;
+    const catName = txCatFilter ? getCatById(txCatFilter).name : '';
+    list.innerHTML = `<div class="empty-state"><div class="icon">${txCatFilter ? getCatById(txCatFilter).emoji : '🔍'}</div><h3>Không có giao dịch</h3><p>${txCatFilter ? `Không có giao dịch "${catName}" tháng này` : 'Tháng này chưa có giao dịch nào'}</p></div>`;
     return;
   }
+
+  // Summary bar when filtering by category
+  let summaryHtml = '';
+  if (txCatFilter) {
+    const cat = getCatById(txCatFilter);
+    const total = txs.reduce((s,t)=>s+t.amount,0);
+    const hTotal = txs.filter(t=>t.owner==='husband').reduce((s,t)=>s+t.amount,0);
+    const vTotal = txs.filter(t=>t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+    summaryHtml = `
+    <div style="margin:12px 20px;background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:14px;padding:14px 16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:28px">${cat.emoji}</span>
+        <div>
+          <div style="font-weight:800;font-size:16px">${cat.name}</div>
+          <div style="font-size:12px;color:var(--text3)">${txs.length} giao dịch · ${monthYear(txPeriodDate)}</div>
+        </div>
+        <div style="margin-left:auto;font-weight:900;font-size:18px;font-family:'JetBrains Mono',monospace;color:var(--expense)">-${fmt(total)}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--husband-dim);border-radius:10px;padding:8px 12px">
+          <div style="font-size:11px;color:var(--text3);font-weight:700">👨 ${state.husbandName}</div>
+          <div style="font-weight:800;font-size:14px;color:var(--husband)">${fmt(hTotal)}</div>
+        </div>
+        <div style="background:var(--wife-dim);border-radius:10px;padding:8px 12px">
+          <div style="font-size:11px;color:var(--text3);font-weight:700">👩 ${state.wifeName}</div>
+          <div style="font-weight:800;font-size:14px;color:var(--wife)">${fmt(vTotal)}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
   // Group by date
   const groups = {};
   txs.forEach(t => {
     if (!groups[t.date]) groups[t.date] = [];
     groups[t.date].push(t);
   });
-  let html = '';
+  let html = summaryHtml;
   Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(date => {
     const d = new Date(date+'T00:00:00');
     const label = d.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
@@ -1535,13 +1869,15 @@ function renderTxScreen() {
 
 function filterTx(f, btn) {
   txFilter = f;
-  document.querySelectorAll('.person-chip').forEach(b => b.classList.remove('active'));
+  txCatFilter = null; // reset cat filter when changing main filter
+  document.querySelectorAll('#tx-person-filter .person-chip').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderTxScreen();
 }
 
 function changeTxPeriod(dir) {
   txPeriodDate = new Date(txPeriodDate.getFullYear(), txPeriodDate.getMonth() + dir, 1);
+  txCatFilter = null;
   renderTxScreen();
 }
 
@@ -1687,16 +2023,34 @@ function showTxDetail(id) {
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <button class="btn btn-outline" onclick="editTx('${t.id}')"><span class="material-symbols-rounded">edit</span> Sửa</button>
-      <button class="btn btn-danger" onclick="deleteTx('${t.id}')"><span class="material-symbols-rounded">delete</span> Xóa</button>
+      ${canEditTx(t)
+        ? `<button class="btn btn-outline" onclick="editTx('${t.id}')"><span class="material-symbols-rounded">edit</span> Sửa</button>
+           <button class="btn btn-danger" onclick="deleteTx('${t.id}')"><span class="material-symbols-rounded">delete</span> Xóa</button>`
+        : `<div style="grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
+             <span class="material-symbols-rounded" style="font-size:18px;color:var(--text3)">lock</span>
+             <span style="font-size:13px;color:var(--text3);font-weight:600">Chỉ ${ownerName} mới có thể sửa hoặc xóa</span>
+           </div>`
+      }
     </div>
   `;
   openModal('modal-tx-detail');
 }
 
+function canEditTx(t) {
+  // If transaction has createdBy, only that person can edit/delete
+  if (t.createdBy) return t.createdBy === state.currentUser;
+  // Fallback: owner field
+  return t.owner === state.currentUser;
+}
+
 function editTx(id) {
   const t = state.transactions.find(tx=>tx.id===id);
   if (!t) return;
+  if (!canEditTx(t)) {
+    const ownerName = t.owner === 'husband' ? state.husbandName : state.wifeName;
+    toast(`🔒 Chỉ ${ownerName} mới có thể sửa giao dịch này`, 3000);
+    return;
+  }
   closeModal('modal-tx-detail');
   editingTxId = id;
   currentTxType = t.type;
@@ -1720,6 +2074,13 @@ function editTx(id) {
 }
 
 function deleteTx(id) {
+  const t = state.transactions.find(tx=>tx.id===id);
+  if (!t) return;
+  if (!canEditTx(t)) {
+    const ownerName = t.owner === 'husband' ? state.husbandName : state.wifeName;
+    toast(`🔒 Chỉ ${ownerName} mới có thể xóa giao dịch này`, 3000);
+    return;
+  }
   if (!confirm('Xác nhận xóa giao dịch này?')) return;
   state.transactions = state.transactions.filter(t=>t.id!==id);
   fbDeleteTx(id);
@@ -1757,13 +2118,16 @@ function renderBudgetScreen() {
     const pctCat = catBudget > 0 ? Math.min(100, Math.round(spent/catBudget*100)) : 0;
     const color = pctCat >= 90 ? 'var(--expense)' : pctCat >= 70 ? 'var(--warning)' : 'var(--primary)';
     if (spent === 0 && catBudget === 0) return '';
-    return `<div class="budget-item">
+    return `<div class="budget-item" onclick="showCatDetail('${cat.id}', budgetPeriodDate)" style="cursor:pointer;transition:background .12s;border-radius:12px;margin-bottom:2px" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''">
       <div class="budget-row">
         <div style="display:flex;align-items:center;gap:8px">
           <span>${cat.emoji}</span>
           <span class="budget-name">${cat.name}</span>
         </div>
-        <span class="budget-nums">${fmt(spent)}${catBudget>0?' / '+fmt(catBudget):''}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="budget-nums">${fmt(spent)}${catBudget>0?' / '+fmt(catBudget):''}</span>
+          <span class="material-symbols-rounded" style="font-size:16px;color:var(--text3)">chevron_right</span>
+        </div>
       </div>
       <div class="progress-wrap">
         <div class="progress-bar" style="width:${Math.max(catBudget>0?pctCat:0,spent>0?2:0)}%;background:${color}"></div>
@@ -1776,6 +2140,81 @@ function renderBudgetScreen() {
 function changeBudgetPeriod(dir) {
   budgetPeriodDate = new Date(budgetPeriodDate.getFullYear(), budgetPeriodDate.getMonth() + dir, 1);
   renderBudgetScreen();
+}
+
+function showCatDetail(catId, periodDate) {
+  const cat = getCatById(catId);
+  const d = periodDate || txPeriodDate;
+  const key = dateKey(d);
+  const txs = state.transactions.filter(t => t.date && t.date.startsWith(key) && t.category === catId);
+  const expTxs = txs.filter(t => t.type === 'expense').sort((a,b) => b.date.localeCompare(a.date));
+  const incTxs = txs.filter(t => t.type === 'income').sort((a,b) => b.date.localeCompare(a.date));
+
+  const total   = expTxs.reduce((s,t)=>s+t.amount,0);
+  const hTotal  = expTxs.filter(t=>t.owner==='husband').reduce((s,t)=>s+t.amount,0);
+  const vTotal  = expTxs.filter(t=>t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+  const avgAmt  = expTxs.length > 0 ? Math.round(total / expTxs.length) : 0;
+
+  document.getElementById('cat-detail-title').innerHTML = `${cat.emoji} ${cat.name}`;
+
+  document.getElementById('cat-detail-stats').innerHTML = `
+    <div style="background:var(--expense-dim);border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:11px;color:var(--text3);font-weight:700;margin-bottom:4px">Tổng chi</div>
+      <div style="font-weight:900;font-size:15px;color:var(--expense);font-family:'JetBrains Mono',monospace">${fmt(total)}</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:11px;color:var(--text3);font-weight:700;margin-bottom:4px">Số lần</div>
+      <div style="font-weight:900;font-size:15px;color:var(--text)">${expTxs.length}</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:11px;color:var(--text3);font-weight:700;margin-bottom:4px">Trung bình</div>
+      <div style="font-weight:900;font-size:13px;color:var(--text);font-family:'JetBrains Mono',monospace">${fmt(avgAmt)}</div>
+    </div>
+    ${(hTotal > 0 || vTotal > 0) ? `
+    <div style="background:var(--husband-dim);border-radius:12px;padding:10px 12px;grid-column:1/2">
+      <div style="font-size:11px;color:var(--text3);font-weight:700">👨 ${state.husbandName}</div>
+      <div style="font-weight:800;font-size:14px;color:var(--husband)">${fmt(hTotal)}</div>
+    </div>
+    <div style="background:var(--wife-dim);border-radius:12px;padding:10px 12px;grid-column:2/-1">
+      <div style="font-size:11px;color:var(--text3);font-weight:700">👩 ${state.wifeName}</div>
+      <div style="font-weight:800;font-size:14px;color:var(--wife)">${fmt(vTotal)}</div>
+    </div>` : ''}
+  `;
+
+  const allTxs = [...expTxs, ...incTxs];
+  if (allTxs.length === 0) {
+    document.getElementById('cat-detail-list').innerHTML = `<div style="text-align:center;padding:32px;color:var(--text3)">Không có giao dịch nào</div>`;
+  } else {
+    // Group by date
+    const groups = {};
+    allTxs.forEach(t => { if (!groups[t.date]) groups[t.date] = []; groups[t.date].push(t); });
+    let html = '';
+    Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(date => {
+      const label = new Date(date+'T00:00:00').toLocaleDateString('vi-VN',{weekday:'short',day:'2-digit',month:'2-digit'});
+      html += `<div class="list-group-header">${label}</div>`;
+      groups[date].forEach(t => {
+        const ownerName = t.owner === 'husband' ? state.husbandName : state.wifeName;
+        const sign = t.type === 'income' ? '+' : '-';
+        const amtColor = t.type === 'income' ? 'var(--income)' : 'var(--expense)';
+        const ownerColor = t.owner === 'husband' ? 'var(--husband)' : 'var(--wife)';
+        html += `
+        <div onclick="showTxDetail('${t.id}')" style="display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.note || cat.name}</div>
+            <div style="font-size:12px;color:${ownerColor};font-weight:700;margin-top:2px">${ownerName}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-weight:800;font-family:'JetBrains Mono',monospace;color:${amtColor}">${sign}${fmt(t.amount)}</div>
+            ${t.shared ? '<div style="font-size:10px;color:var(--primary);font-weight:700">chung</div>' : ''}
+          </div>
+          <span class="material-symbols-rounded" style="font-size:16px;color:var(--text3)">chevron_right</span>
+        </div>`;
+      });
+    });
+    document.getElementById('cat-detail-list').innerHTML = html;
+  }
+
+  openModal('modal-cat-detail');
 }
 
 function openEditBudget() {
@@ -1836,6 +2275,7 @@ function switchReportTab(tab, btn) {
 
 function changeReportPeriod(dir) {
   reportPeriodDate = new Date(reportPeriodDate.getFullYear(), reportPeriodDate.getMonth() + dir, 1);
+  _personDetailOpen = { husband: false, wife: false };
   renderMonthReport();
 }
 
@@ -1851,60 +2291,90 @@ function renderMonthReport() {
   document.getElementById('report-income').textContent = fmt(income);
   document.getElementById('report-expense').textContent = fmt(expense);
 
-  // Donut chart
+  // ── Donut chart (chung) ──────────────────────────────────────
   const expTxs = txs.filter(t=>t.type==='expense');
   const catMap = {};
   expTxs.forEach(t => { catMap[t.category] = (catMap[t.category]||0) + t.amount; });
   const cats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,6);
   drawDonut('donut-chart', cats, expense);
 
-  // Legend
+  // Legend (clickable — shows tx list in a subtle expand)
   let legend = '';
   cats.forEach(([cid, amt], i) => {
     const c = getCatById(cid);
     const pct = expense > 0 ? Math.round(amt/expense*100) : 0;
-    legend += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:12px;height:12px;border-radius:3px;background:${COLORS[i%COLORS.length]};flex-shrink:0"></div>
-        <span style="font-size:14px">${c.emoji} ${c.name}</span>
+    // Progress bar mini
+    legend += `
+    <div onclick="showCatDetail('${cid}', reportPeriodDate)" style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;border-radius:8px;margin-bottom:1px" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:3px;background:${COLORS[i%COLORS.length]};flex-shrink:0"></div>
+          <span style="font-size:14px">${c.emoji} ${c.name}</span>
+        </div>
+        <div style="text-align:right;display:flex;align-items:center;gap:8px">
+          <span style="font-weight:700;font-size:13px">${fmt(amt)}</span>
+          <span style="font-size:11px;color:var(--text3);min-width:32px;text-align:right">${pct}%</span>
+          <span class="material-symbols-rounded" style="font-size:16px;color:var(--text3)">chevron_right</span>
+        </div>
       </div>
-      <div style="text-align:right">
-        <span style="font-weight:700;font-size:14px">${fmt(amt)}</span>
-        <span style="font-size:12px;color:var(--text3);margin-left:6px">${pct}%</span>
+      <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${COLORS[i%COLORS.length]};border-radius:2px;transition:width .4s ease"></div>
       </div>
     </div>`;
   });
   document.getElementById('donut-legend').innerHTML = legend;
 
-  // By person
-  const hExp = txs.filter(t=>t.type==='expense'&&t.owner==='husband').reduce((s,t)=>s+t.amount,0);
-  const vExp = txs.filter(t=>t.type==='expense'&&t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+  // ── Chi tiêu theo người (summary clickable) ───────────────────
+  const hExpTxs = txs.filter(t=>t.type==='expense'&&t.owner==='husband');
+  const vExpTxs = txs.filter(t=>t.type==='expense'&&t.owner==='wife');
+  const hExp = hExpTxs.reduce((s,t)=>s+t.amount,0);
+  const vExp = vExpTxs.reduce((s,t)=>s+t.amount,0);
   const hInc = txs.filter(t=>t.type==='income'&&t.owner==='husband').reduce((s,t)=>s+t.amount,0);
   const vInc = txs.filter(t=>t.type==='income'&&t.owner==='wife').reduce((s,t)=>s+t.amount,0);
+  const totalExp = hExp + vExp || 1;
+
   document.getElementById('report-by-person').innerHTML = `
-    <div style="display:grid;gap:12px">
-      <div style="background:var(--husband-dim);border-radius:12px;padding:14px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-weight:700;color:var(--husband)">👨 ${state.husbandName}</span>
+    <div style="display:grid;gap:10px">
+      <div style="background:var(--husband-dim);border-radius:14px;padding:14px 16px;cursor:pointer;transition:opacity .15s" onclick="togglePersonDetail('husband')" id="person-summary-husband">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-weight:800;color:var(--husband);font-size:14px">👨 ${state.husbandName}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:var(--text3);font-weight:600">${Math.round(hExp/totalExp*100)}% chi tiêu</span>
+            <span class="material-symbols-rounded" id="chevron-husband-sum" style="color:var(--husband);font-size:18px;transition:transform .2s">expand_more</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px">
-          <span>Chi: <b>${fmt(hExp)}</b></span>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+          <span>Chi: <b style="color:var(--expense)">${fmt(hExp)}</b></span>
           <span>Thu: <b style="color:var(--income)">${fmt(hInc)}</b></span>
         </div>
-      </div>
-      <div style="background:var(--wife-dim);border-radius:12px;padding:14px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-weight:700;color:var(--wife)">👩 ${state.wifeName}</span>
+        <div style="height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${Math.round(hExp/totalExp*100)}%;background:var(--husband);border-radius:3px;transition:width .4s"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px">
-          <span>Chi: <b>${fmt(vExp)}</b></span>
+      </div>
+      <div style="background:var(--wife-dim);border-radius:14px;padding:14px 16px;cursor:pointer;transition:opacity .15s" onclick="togglePersonDetail('wife')" id="person-summary-wife">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-weight:800;color:var(--wife);font-size:14px">👩 ${state.wifeName}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:var(--text3);font-weight:600">${Math.round(vExp/totalExp*100)}% chi tiêu</span>
+            <span class="material-symbols-rounded" id="chevron-wife-sum" style="color:var(--wife);font-size:18px;transition:transform .2s">expand_more</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px">
+          <span>Chi: <b style="color:var(--expense)">${fmt(vExp)}</b></span>
           <span>Thu: <b style="color:var(--income)">${fmt(vInc)}</b></span>
+        </div>
+        <div style="height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${Math.round(vExp/totalExp*100)}%;background:var(--wife);border-radius:3px;transition:width .4s"></div>
         </div>
       </div>
     </div>
   `;
 
-  // Bar chart - weekly
+  // ── Render person detail cards ────────────────────────────────
+  renderPersonDetailCard('husband', hExpTxs, hExp, txs);
+  renderPersonDetailCard('wife', vExpTxs, vExp, txs);
+
+  // ── Bar chart - weekly (responsive) ──────────────────────────
   const weeks = [0,0,0,0];
   const weekInc = [0,0,0,0];
   txs.forEach(t => {
@@ -1914,6 +2384,102 @@ function renderMonthReport() {
     else weekInc[w] += t.amount;
   });
   drawBarChart('bar-chart', ['Tuần 1','Tuần 2','Tuần 3','Tuần 4'], weeks, weekInc);
+}
+
+function renderPersonDetailCard(person, expTxs, totalExp, allTxs) {
+  const card = document.getElementById(`report-person-${person}-card`);
+  const titleEl = document.getElementById(`report-person-${person}-title`);
+  if (!card) return;
+
+  const name = person === 'husband' ? state.husbandName : state.wifeName;
+  const incTxs = allTxs.filter(t=>t.type==='income'&&t.owner===person);
+  const totalInc = incTxs.reduce((s,t)=>s+t.amount,0);
+
+  card.style.display = '';
+  titleEl.textContent = `${person==='husband'?'👨':'👩'} ${name} — Chi tiết`;
+
+  // Build category breakdown for this person
+  const catMap = {};
+  expTxs.forEach(t => { catMap[t.category] = (catMap[t.category]||0) + t.amount; });
+  const cats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,6);
+
+  // Donut for this person
+  drawDonut(`donut-${person}`, cats, totalExp);
+
+  // Category legend with progress bar
+  const color = person === 'husband' ? 'var(--husband)' : 'var(--wife)';
+  let legendHtml = '';
+  cats.forEach(([cid, amt], i) => {
+    const c = getCatById(cid);
+    const pct = totalExp > 0 ? Math.round(amt/totalExp*100) : 0;
+    legendHtml += `
+    <div onclick="showCatDetail('${cid}', reportPeriodDate)" style="padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;border-radius:8px;transition:background .1s" onmouseenter="this.style.background='var(--surface2)'" onmouseleave="this.style.background=''">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:13px;display:flex;align-items:center;gap:6px">
+          <span style="font-size:16px">${c.emoji}</span> ${c.name}
+        </span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-weight:700;font-size:13px">${fmt(amt)}</span>
+          <span style="font-size:11px;color:var(--text3)">${pct}%</span>
+          <span class="material-symbols-rounded" style="font-size:14px;color:var(--text3)">chevron_right</span>
+        </div>
+      </div>
+      <div style="height:4px;background:var(--border);border-radius:2px">
+        <div style="height:100%;width:${pct}%;background:${COLORS[i%COLORS.length]};border-radius:2px"></div>
+      </div>
+    </div>`;
+  });
+  document.getElementById(`report-person-${person}-legend`).innerHTML = legendHtml;
+
+  // Recent transactions for this person (last 10)
+  const sorted = [...expTxs, ...incTxs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
+  let txHtml = `<div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Giao dịch gần đây</div>`;
+  if (sorted.length === 0) {
+    txHtml += `<div style="color:var(--text3);font-size:13px;text-align:center;padding:12px 0">Không có giao dịch</div>`;
+  } else {
+    sorted.forEach(t => {
+      const c = getCatById(t.category);
+      const sign = t.type === 'income' ? '+' : '-';
+      const amtColor = t.type === 'income' ? 'var(--income)' : 'var(--expense)';
+      txHtml += `
+      <div onclick="showTxDetail('${t.id}')" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer">
+        <div style="width:34px;height:34px;border-radius:10px;background:${t.type==='income'?'var(--income-dim)':'var(--expense-dim)'};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${c.emoji}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.note || c.name}</div>
+          <div style="font-size:11px;color:var(--text3)">${t.date}</div>
+        </div>
+        <span style="font-weight:700;font-size:13px;color:${amtColor}">${sign}${fmt(t.amount)}</span>
+      </div>`;
+    });
+    if (expTxs.length + incTxs.length > 10) {
+      txHtml += `<div style="text-align:center;font-size:12px;color:var(--text3);padding:8px 0">...và ${expTxs.length + incTxs.length - 10} giao dịch khác</div>`;
+    }
+  }
+  document.getElementById(`report-person-${person}-txlist`).innerHTML = txHtml;
+}
+
+let _personDetailOpen = { husband: false, wife: false };
+function togglePersonDetail(person) {
+  const isOpen = _personDetailOpen[person];
+  _personDetailOpen[person] = !isOpen;
+  const detail = document.getElementById(`report-person-${person}-detail`);
+  const chevron = document.getElementById(`chevron-${person}`);
+  const chevronSum = document.getElementById(`chevron-${person}-sum`);
+  if (detail) detail.style.display = isOpen ? 'none' : '';
+  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (chevronSum) chevronSum.style.transform = isOpen ? '' : 'rotate(180deg)';
+  // Re-draw donut after display (canvas needs to be visible)
+  if (!isOpen) {
+    setTimeout(() => {
+      const txs = getMonthTransactions(reportPeriodDate);
+      const expTxs = txs.filter(t=>t.type==='expense'&&t.owner===person);
+      const totalExp = expTxs.reduce((s,t)=>s+t.amount,0);
+      const catMap = {};
+      expTxs.forEach(t => { catMap[t.category]=(catMap[t.category]||0)+t.amount; });
+      const cats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,6);
+      drawDonut(`donut-${person}`, cats, totalExp);
+    }, 50);
+  }
 }
 
 function renderYearReport() {
@@ -2028,39 +2594,92 @@ function drawBarChart(canvasId, labels, vals, vals2) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const dpr = window.devicePixelRatio || 1;
-  const W = parseInt(canvas.style.width||canvas.width)||360;
-  const H = parseInt(canvas.style.height||canvas.height)||140;
-  canvas.width = W*dpr; canvas.height = H*dpr;
-  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  // Use actual container width for responsiveness
+  const container = canvas.parentElement;
+  const W = container ? Math.floor(container.clientWidth) || 340 : 340;
+  const H = parseInt(canvas.style.height) || 160;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
   const ctx = canvas.getContext('2d');
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,W,H);
-  const pad=16, bottom=24, top=12;
-  const max = Math.max(...vals,...(vals2||[]),1);
-  const bw = (W-pad*2)/labels.length;
-  const barW = Math.min(bw*0.35, 20);
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
   const isDark = document.documentElement.dataset.theme === 'dark';
-  const textColor = isDark ? '#7ab8b0' : '#4a6460';
-  labels.forEach((l,i) => {
-    const x = pad + bw*i + bw/2;
-    const hE = ((vals[i]||0)/max)*(H-top-bottom);
-    if (hE > 0) {
-      const gE = ctx.createLinearGradient(0,H-bottom-hE,0,H-bottom);
-      gE.addColorStop(0,'#f43f5e'); gE.addColorStop(1,'#f43f5e44');
-      ctx.fillStyle=gE;
-      ctx.beginPath(); ctx.roundRect(x-barW-(vals2?2:0), H-bottom-hE, barW, hE, [4,4,0,0]); ctx.fill();
-    }
-    if (vals2) {
-      const hI = ((vals2[i]||0)/max)*(H-top-bottom);
-      if (hI > 0) {
-        const gI = ctx.createLinearGradient(0,H-bottom-hI,0,H-bottom);
-        gI.addColorStop(0,'#0dcc9c'); gI.addColorStop(1,'#0dcc9c44');
-        ctx.fillStyle=gI;
-        ctx.beginPath(); ctx.roundRect(x+2, H-bottom-hI, barW, hI, [4,4,0,0]); ctx.fill();
+  const textColor   = isDark ? '#8ab8b0' : '#607d78';
+  const gridColor   = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const padL = 44, padR = 12, padT = 16, padB = 28;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const max = Math.max(...vals, ...(vals2||[]), 1);
+
+  // Grid lines + Y-axis labels
+  const gridCount = 4;
+  ctx.font = `600 9px 'Be Vietnam Pro',sans-serif`;
+  ctx.textAlign = 'right';
+  for (let i = 0; i <= gridCount; i++) {
+    const y = padT + chartH - (i / gridCount) * chartH;
+    const val = (max * i / gridCount);
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = textColor;
+    ctx.fillText(val >= 1e6 ? (val/1e6).toFixed(val%1e6?1:0)+'M' : val >= 1e3 ? (val/1e3).toFixed(0)+'K' : val.toFixed(0), padL - 4, y + 3.5);
+  }
+
+  // Bars
+  const bw = chartW / labels.length;
+  const barW = Math.min(bw * 0.28, vals2 ? 14 : 22);
+  const gap  = vals2 ? 3 : 0;
+  ctx.font = `600 ${labels.length > 8 ? 8.5 : 10}px 'Be Vietnam Pro',sans-serif`;
+  ctx.textAlign = 'center';
+
+  labels.forEach((l, i) => {
+    const cx = padL + bw * i + bw / 2;
+
+    // Expense bar
+    const hE = ((vals[i]||0) / max) * chartH;
+    if (hE > 1) {
+      const x = cx - barW - gap;
+      const gE = ctx.createLinearGradient(0, padT + chartH - hE, 0, padT + chartH);
+      gE.addColorStop(0, '#f43f5e'); gE.addColorStop(1, 'rgba(244,63,94,.3)');
+      ctx.fillStyle = gE;
+      ctx.beginPath(); ctx.roundRect(x, padT + chartH - hE, barW, hE, [4, 4, 0, 0]); ctx.fill();
+      // Value label on top if big enough
+      if (hE > 20) {
+        ctx.fillStyle = isDark ? '#ffa0b4' : '#c0192f';
+        ctx.font = `700 8px 'Be Vietnam Pro',sans-serif`;
+        const v = vals[i] >= 1e6 ? (vals[i]/1e6).toFixed(1)+'M' : vals[i] >= 1e3 ? Math.round(vals[i]/1e3)+'K' : '';
+        if (v) ctx.fillText(v, x + barW/2, padT + chartH - hE - 3);
       }
     }
-    ctx.fillStyle=textColor; ctx.font=`600 ${labels.length>8?9:10}px 'Be Vietnam Pro',sans-serif`;
-    ctx.textAlign='center'; ctx.fillText(l, x, H-4);
+
+    // Income bar
+    if (vals2) {
+      const hI = ((vals2[i]||0) / max) * chartH;
+      if (hI > 1) {
+        const x = cx + gap;
+        const gI = ctx.createLinearGradient(0, padT + chartH - hI, 0, padT + chartH);
+        gI.addColorStop(0, '#0dcc9c'); gI.addColorStop(1, 'rgba(13,204,156,.3)');
+        ctx.fillStyle = gI;
+        ctx.beginPath(); ctx.roundRect(x, padT + chartH - hI, barW, hI, [4, 4, 0, 0]); ctx.fill();
+        if (hI > 20) {
+          ctx.fillStyle = isDark ? '#6ef5d4' : '#096e52';
+          ctx.font = `700 8px 'Be Vietnam Pro',sans-serif`;
+          const v = vals2[i] >= 1e6 ? (vals2[i]/1e6).toFixed(1)+'M' : vals2[i] >= 1e3 ? Math.round(vals2[i]/1e3)+'K' : '';
+          if (v) ctx.fillText(v, x + barW/2, padT + chartH - hI - 3);
+        }
+      }
+    }
+
+    // X-axis label
+    ctx.fillStyle = textColor;
+    ctx.font = `600 ${labels.length > 8 ? 8.5 : 10}px 'Be Vietnam Pro',sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(l, cx, H - 6);
   });
 }
 
@@ -2148,6 +2767,24 @@ function renderSettingsScreen() {
     avWrap.innerHTML = gUser.photoURL
       ? `<img src="${gUser.photoURL}" style="width:100%;height:100%;object-fit:cover" alt="avatar"/>`
       : `<span style="font-size:20px;font-weight:800;color:var(--primary-dark)">${(gUser.displayName||'?')[0].toUpperCase()}</span>`;
+    // Provider badge
+    const badgeEl = document.getElementById('settings-auth-provider-badge');
+    if (badgeEl) {
+      const isEmail = !gUser.photoURL && gUser.email && !gUser.photoURL?.includes('googleusercontent');
+      // Detect email provider by checking saved provider info or absence of Google photo
+      const provider = localStorage.getItem('viGiaDinh_authProvider') || (gUser.photoURL?.includes('googleusercontent') ? 'google' : 'email');
+      if (provider === 'google') {
+        badgeEl.innerHTML = '<span class="auth-badge auth-badge-google">Google ✓</span>';
+      } else {
+        badgeEl.innerHTML = `<span class="auth-badge" style="background:var(--primary-dim);color:var(--primary-dark)">📧 Email${gUser.emailVerified===false?' · Chưa xác nhận':' ✓'}</span>`;
+      }
+    }
+    // Show/hide email-specific controls
+    const provider2 = localStorage.getItem('viGiaDinh_authProvider') || 'google';
+    const chPwUI = document.getElementById('settings-change-password-ui');
+    const verifyHint = document.getElementById('settings-email-verify-hint');
+    if (chPwUI) chPwUI.style.display = provider2 === 'email' ? '' : 'none';
+    if (verifyHint) verifyHint.style.display = (provider2 === 'email' && gUser.emailVerified === false) ? '' : 'none';
   } else {
     signedInEl.style.display = 'none'; signedOutEl.style.display = '';
   }
@@ -2309,11 +2946,284 @@ async function loadFirebaseAuth() {
   } catch(e) { console.error('Auth SDK error:', e); return false; }
 }
 
+// ============================================================
+// EMAIL AUTH – UI HELPERS
+// ============================================================
+function switchAuthTab(tab) {
+  const panels = ['auth-login-panel','auth-register-panel','auth-forgot-panel'];
+  panels.forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+
+  if (tab === 'login') {
+    document.getElementById('auth-login-panel').style.display = '';
+    document.getElementById('tab-login')?.classList.add('active');
+  } else if (tab === 'register') {
+    document.getElementById('auth-register-panel').style.display = '';
+    document.getElementById('tab-register')?.classList.add('active');
+  } else if (tab === 'forgot') {
+    document.getElementById('auth-forgot-panel').style.display = '';
+    // hide tab bar highlighting
+  }
+}
+
+function showForgotPassword() {
+  const prefill = document.getElementById('login-email')?.value || '';
+  switchAuthTab('forgot');
+  if (prefill) {
+    const fe = document.getElementById('forgot-email');
+    if (fe) fe.value = prefill;
+  }
+}
+
+function togglePasswordVis(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const icon = btn.querySelector('.material-symbols-rounded');
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) icon.textContent = 'visibility_off';
+  } else {
+    input.type = 'password';
+    if (icon) icon.textContent = 'visibility';
+  }
+}
+
+function checkPasswordStrength(pw) {
+  const segs = [document.getElementById('seg1'),document.getElementById('seg2'),document.getElementById('seg3'),document.getElementById('seg4')];
+  const label = document.getElementById('strength-label');
+  segs.forEach(s => { s.className='strength-seg'; });
+  if (!pw) { if(label) label.textContent=''; return; }
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const cls = score <= 1 ? 'weak' : score <= 2 ? 'medium' : score <= 3 ? 'medium' : 'strong';
+  const labels = ['','Yếu','Trung bình','Khá mạnh','Mạnh'];
+  const colors = ['','#f43f5e','#f59e0b','#10b981','#10b981'];
+  for (let i = 0; i < score; i++) { if(segs[i]) segs[i].classList.add(cls); }
+  if (label) { label.textContent = labels[score] || ''; label.style.color = colors[score] || 'var(--text3)'; }
+}
+
+function emailAuthError(code) {
+  const map = {
+    'auth/email-already-in-use': 'Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.',
+    'auth/invalid-email': 'Địa chỉ email không hợp lệ.',
+    'auth/weak-password': 'Mật khẩu quá yếu. Cần ít nhất 6 ký tự.',
+    'auth/user-not-found': 'Không tìm thấy tài khoản với email này.',
+    'auth/wrong-password': 'Mật khẩu không chính xác.',
+    'auth/invalid-credential': 'Email hoặc mật khẩu không đúng.',
+    'auth/too-many-requests': 'Tài khoản bị tạm khóa do đăng nhập sai nhiều lần. Hãy thử lại sau.',
+    'auth/user-disabled': 'Tài khoản này đã bị vô hiệu hóa.',
+    'auth/popup-blocked': 'Trình duyệt chặn popup. Hãy cho phép popup cho trang này.',
+    'auth/popup-closed-by-user': 'Bạn đã đóng cửa sổ đăng nhập.',
+    'auth/unauthorized-domain': 'Domain chưa được phép trong Firebase Console.',
+    'auth/network-request-failed': 'Lỗi kết nối mạng. Hãy kiểm tra internet.',
+  };
+  return map[code] || 'Đã có lỗi xảy ra: ' + code;
+}
+
+function setBtnLoading(btnId, loading, originalHTML) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.classList.add('btn-loading');
+    btn.dataset.origHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-rounded spin-icon">sync</span> Đang xử lý...`;
+  } else {
+    btn.disabled = false;
+    btn.classList.remove('btn-loading');
+    if (btn.dataset.origHtml) btn.innerHTML = btn.dataset.origHtml;
+  }
+}
+
+// ============================================================
+// EMAIL AUTH – ĐĂNG KÝ
+// ============================================================
+async function signUpWithEmail() {
+  const name    = (document.getElementById('reg-name')?.value || '').trim();
+  const email   = (document.getElementById('reg-email')?.value || '').trim();
+  const pw      = document.getElementById('reg-password')?.value || '';
+  const confirm = document.getElementById('reg-confirm')?.value || '';
+  const errEl   = document.getElementById('reg-email-error');
+
+  errEl.style.display = 'none';
+
+  if (!name)  { errEl.textContent='⚠️ Vui lòng nhập họ tên.'; errEl.style.display='flex'; return; }
+  if (!email) { errEl.textContent='⚠️ Vui lòng nhập email.';   errEl.style.display='flex'; return; }
+  if (pw.length < 8) { errEl.textContent='⚠️ Mật khẩu tối thiểu 8 ký tự.'; errEl.style.display='flex'; return; }
+  if (pw !== confirm) { errEl.textContent='⚠️ Mật khẩu xác nhận không khớp.'; errEl.style.display='flex'; return; }
+
+  setBtnLoading('email-reg-btn', true);
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
+    const auth = window.fbAuth.getAuth(app);
+
+    const cred = await window.fbAuth.createUserWithEmailAndPassword(auth, email, pw);
+    const firebaseUser = cred.user;
+
+    // Set display name
+    await window.fbAuth.updateProfile(firebaseUser, { displayName: name });
+
+    // Send verification email
+    await window.fbAuth.sendEmailVerification(firebaseUser);
+
+    googleUser = { uid: firebaseUser.uid, displayName: name, email: firebaseUser.email, photoURL: '', emailVerified: false };
+    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+    localStorage.setItem('viGiaDinh_authProvider', 'email');
+
+    // Proceed to setup or app
+    afterSuccessfulAuth(firebaseUser, name);
+    toast(`🎉 Đăng ký thành công! Email xác nhận đã gửi đến ${email}`, 5000);
+
+  } catch(e) {
+    errEl.textContent = '❌ ' + emailAuthError(e.code);
+    errEl.style.display = 'flex';
+  }
+  setBtnLoading('email-reg-btn', false);
+}
+
+// ============================================================
+// EMAIL AUTH – ĐĂNG NHẬP
+// ============================================================
+async function signInWithEmail() {
+  const email = (document.getElementById('login-email')?.value || '').trim();
+  const pw    = document.getElementById('login-password')?.value || '';
+  const errEl = document.getElementById('login-email-error');
+
+  errEl.style.display = 'none';
+
+  if (!email) { errEl.textContent='⚠️ Vui lòng nhập email.';    errEl.style.display='flex'; return; }
+  if (!pw)    { errEl.textContent='⚠️ Vui lòng nhập mật khẩu.'; errEl.style.display='flex'; return; }
+
+  setBtnLoading('email-login-btn', true);
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
+    const auth = window.fbAuth.getAuth(app);
+
+    const cred = await window.fbAuth.signInWithEmailAndPassword(auth, email, pw);
+    const firebaseUser = cred.user;
+
+    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName || email.split('@')[0], email: firebaseUser.email, photoURL: firebaseUser.photoURL || '', emailVerified: firebaseUser.emailVerified };
+    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+    localStorage.setItem('viGiaDinh_authProvider', 'email');
+
+    afterSuccessfulAuth(firebaseUser, googleUser.displayName);
+    toast(`👋 Xin chào ${googleUser.displayName}!`, 3000);
+
+  } catch(e) {
+    errEl.textContent = '❌ ' + emailAuthError(e.code);
+    errEl.style.display = 'flex';
+  }
+  setBtnLoading('email-login-btn', false);
+}
+
+// ============================================================
+// EMAIL AUTH – QUÊN MẬT KHẨU
+// ============================================================
+async function sendPasswordReset() {
+  const email  = (document.getElementById('forgot-email')?.value || '').trim();
+  const errEl  = document.getElementById('forgot-error');
+  const succEl = document.getElementById('forgot-success');
+
+  errEl.style.display = 'none';
+  succEl.style.display = 'none';
+
+  if (!email) { errEl.textContent='⚠️ Vui lòng nhập email.'; errEl.style.display='flex'; return; }
+
+  setBtnLoading('forgot-btn', true);
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
+    const auth = window.fbAuth.getAuth(app);
+
+    await window.fbAuth.sendPasswordResetEmail(auth, email);
+    succEl.innerHTML = `<span class="material-symbols-rounded">check_circle</span> Email đặt lại mật khẩu đã gửi đến <b>${email}</b>. Kiểm tra hộp thư (kể cả Spam).`;
+    succEl.style.display = 'flex';
+  } catch(e) {
+    errEl.textContent = '❌ ' + emailAuthError(e.code);
+    errEl.style.display = 'flex';
+  }
+  setBtnLoading('forgot-btn', false);
+}
+
+// ── Shared post-auth logic ────────────────────────────────────
+function afterSuccessfulAuth(firebaseUser, displayName) {
+  if (!localStorage.getItem('viGiaDinh_v2')) {
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('screen-setup').style.display = 'flex';
+    const nameInput = document.getElementById('setup-name-husband');
+    if (nameInput && displayName) nameInput.value = displayName;
+    showGoogleInfoInSetup({ displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL || '' });
+  } else {
+    document.getElementById('screen-login').style.display = 'none';
+    document.getElementById('main-app').style.display = 'flex';
+    txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
+    initApp();
+    // Show email verification banner if not verified
+    if (!firebaseUser.emailVerified && firebaseUser.providerData?.[0]?.providerId === 'password') {
+      setTimeout(() => showEmailVerifyBanner(firebaseUser.email), 1500);
+    }
+    setTimeout(autoReconnectFirebase, 500);
+  }
+}
+
+function showEmailVerifyBanner(email) {
+  const existing = document.getElementById('verify-email-banner');
+  if (existing) return;
+  const banner = document.createElement('div');
+  banner.id = 'verify-email-banner';
+  banner.className = 'verify-banner';
+  banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:390px;z-index:300;box-shadow:var(--shadow-lg)';
+  banner.innerHTML = `
+    <span class="material-symbols-rounded" style="color:#f59e0b;font-size:22px;flex-shrink:0">mark_email_unread</span>
+    <div style="flex:1;font-size:12px;font-weight:600;color:var(--text)">
+      <b>Chưa xác nhận email.</b> Kiểm tra hộp thư <span style="color:var(--primary-dark)">${email}</span>
+      <button onclick="resendVerifyEmail()" style="background:none;border:none;color:var(--primary);font-weight:700;cursor:pointer;padding:0;font-family:inherit;font-size:12px;text-decoration:underline;display:block;margin-top:2px">Gửi lại email xác nhận</button>
+    </div>
+    <button onclick="document.getElementById('verify-email-banner').remove()" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center">
+      <span class="material-symbols-rounded" style="font-size:18px">close</span>
+    </button>`;
+  document.body.appendChild(banner);
+  setTimeout(() => { if(banner.parentNode) banner.remove(); }, 10000);
+}
+
+async function resendVerifyEmail() {
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    const app  = apps.length > 0 ? window.fbSDK.getApp() : null;
+    if (!app) return;
+    const auth = window.fbAuth.getAuth(app);
+    if (auth.currentUser) {
+      await window.fbAuth.sendEmailVerification(auth.currentUser);
+      toast('📧 Email xác nhận đã được gửi lại!', 3000);
+      document.getElementById('verify-email-banner')?.remove();
+    }
+  } catch(e) {
+    toast('❌ Không thể gửi: ' + e.message, 3000);
+  }
+}
+
 async function signInWithGoogle() {
   const btn = document.getElementById('google-signin-btn');
   const errEl = document.getElementById('google-signin-error');
-  btn.classList.add('loading');
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`;
+  if(btn) { btn.classList.add('loading'); btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`; }
   errEl.style.display = 'none';
 
   try {
@@ -2325,20 +3235,12 @@ async function signInWithGoogle() {
 
     const firebaseUser = await signInWithFirebaseGoogle(app);
 
-    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
+    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, emailVerified: true };
     localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+    localStorage.setItem('viGiaDinh_authProvider', 'google');
 
-    if (!localStorage.getItem('viGiaDinh_v2')) {
-      document.getElementById('screen-login').style.display = 'none';
-      document.getElementById('screen-setup').style.display = 'flex';
-      document.getElementById('setup-name-husband').value = firebaseUser.displayName || '';
-      showGoogleInfoInSetup(firebaseUser);
-    } else {
-      document.getElementById('screen-login').style.display = 'none';
-      document.getElementById('main-app').style.display = 'flex';
-      txPeriodDate = budgetPeriodDate = reportPeriodDate = new Date();
-      initApp();
-      setTimeout(autoReconnectFirebase, 500);
+    afterSuccessfulAuth(firebaseUser, firebaseUser.displayName);
+    if (localStorage.getItem('viGiaDinh_v2')) {
       toast(`👋 Xin chào ${firebaseUser.displayName}!`, 3000);
     }
   } catch(e) {
@@ -2350,8 +3252,7 @@ async function signInWithGoogle() {
     else msg += e.message;
     errEl.textContent = msg;
     errEl.style.display = 'flex';
-    btn.classList.remove('loading');
-    btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`;
+    if(btn) { btn.classList.remove('loading'); btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.83l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Đăng nhập bằng Google`; }
   }
 }
 
@@ -2372,9 +3273,31 @@ function showGoogleInfoInSetup(user) {
   const info = document.getElementById('setup-google-info');
   if (!info) return;
   info.style.display = 'flex';
-  document.getElementById('setup-google-avatar').src = user.photoURL || '';
-  document.getElementById('setup-google-name').textContent = user.displayName || '';
+  document.getElementById('setup-google-name').textContent  = user.displayName || '';
   document.getElementById('setup-google-email').textContent = user.email || '';
+  // Avatar
+  const avatarEl = document.getElementById('setup-auth-avatar');
+  if (avatarEl) {
+    if (user.photoURL) {
+      avatarEl.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;object-fit:cover" alt="avatar"/>`;
+    } else {
+      avatarEl.textContent = (user.displayName || user.email || '?')[0].toUpperCase();
+    }
+  }
+  // Badge
+  const badgeEl = document.getElementById('setup-auth-badge');
+  if (badgeEl) {
+    const provider = localStorage.getItem('viGiaDinh_authProvider') || 'google';
+    if (provider === 'email') {
+      badgeEl.textContent = '📧 Email';
+      badgeEl.className = 'auth-badge';
+      badgeEl.style.cssText = 'background:var(--primary-dim);color:var(--primary-dark);margin-left:auto;flex-shrink:0';
+    } else {
+      badgeEl.textContent = 'Google ✓';
+      badgeEl.className = 'auth-badge auth-badge-google';
+      badgeEl.style.cssText = 'margin-left:auto;flex-shrink:0';
+    }
+  }
 }
 
 function updateHeaderAvatar() {
@@ -2391,9 +3314,20 @@ function updateHeaderAvatar() {
 }
 
 function signOut() {
-  if (!confirm('Đăng xuất khỏi tài khoản Google?')) return;
+  if (!confirm('Đăng xuất khỏi tài khoản?')) return;
+  // Firebase sign out
+  if (window.__fbAuthLoaded && window.fbAuth && window.fbSDK) {
+    try {
+      const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+      if (apps.length > 0) {
+        const auth = window.fbAuth.getAuth(window.fbSDK.getApp());
+        window.fbAuth.signOut(auth).catch(()=>{});
+      }
+    } catch(e){}
+  }
   googleUser = null;
   localStorage.removeItem('viGiaDinh_googleUser');
+  localStorage.removeItem('viGiaDinh_authProvider');
   // Disconnect Firebase
   fbListeners.forEach(unsub => { try { unsub(); } catch(e){} });
   fbListeners = []; fbDb = null; fbApp = null; fbFamilyId = null; fbConnected = false;
@@ -2402,6 +3336,69 @@ function signOut() {
   toast('👋 Đã đăng xuất', 2500);
   updateFirebaseStatusUI(false);
   renderSettingsScreen();
+}
+
+function goToLoginScreen() {
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  switchAuthTab('login');
+}
+
+function checkPasswordStrengthAlt(pw) {
+  const segs = [document.getElementById('seg1a'),document.getElementById('seg2a'),document.getElementById('seg3a'),document.getElementById('seg4a')];
+  const label = document.getElementById('strength-label-alt');
+  segs.forEach(s => { if(s) s.className='strength-seg'; });
+  if (!pw || !label) return;
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const cls = score <= 1 ? 'weak' : score <= 3 ? 'medium' : 'strong';
+  const labels = ['','Yếu','Trung bình','Khá mạnh','Mạnh'];
+  const colors = ['','#f43f5e','#f59e0b','#10b981','#10b981'];
+  for (let i = 0; i < score; i++) { if(segs[i]) segs[i].classList.add(cls); }
+  label.textContent = labels[score] || '';
+  label.style.color = colors[score] || 'var(--text3)';
+}
+
+async function changePassword() {
+  const current = document.getElementById('chpw-current')?.value || '';
+  const newPw   = document.getElementById('chpw-new')?.value || '';
+  const confirm = document.getElementById('chpw-confirm')?.value || '';
+  const errEl   = document.getElementById('chpw-error');
+  errEl.style.display = 'none';
+
+  if (!current) { errEl.textContent='⚠️ Nhập mật khẩu hiện tại.'; errEl.style.display='flex'; return; }
+  if (newPw.length < 8) { errEl.textContent='⚠️ Mật khẩu mới tối thiểu 8 ký tự.'; errEl.style.display='flex'; return; }
+  if (newPw !== confirm) { errEl.textContent='⚠️ Mật khẩu xác nhận không khớp.'; errEl.style.display='flex'; return; }
+
+  setBtnLoading('chpw-btn', true);
+  try {
+    await loadFirebaseSDK();
+    await loadFirebaseAuth();
+    const apps = window.fbSDK.getApps ? window.fbSDK.getApps() : [];
+    if (!apps.length) throw new Error('Chưa kết nối Firebase.');
+    const auth = window.fbAuth.getAuth(window.fbSDK.getApp());
+    const user = auth.currentUser;
+    if (!user) throw new Error('Phiên đăng nhập đã hết. Hãy đăng nhập lại.');
+
+    // Re-authenticate first
+    const cred = window.fbAuth.EmailAuthProvider.credential(user.email, current);
+    await window.fbAuth.reauthenticateWithCredential(user, cred);
+    await window.fbAuth.updatePassword(user, newPw);
+
+    closeModal('modal-change-password');
+    document.getElementById('chpw-current').value = '';
+    document.getElementById('chpw-new').value = '';
+    document.getElementById('chpw-confirm').value = '';
+    toast('✅ Đổi mật khẩu thành công!', 3000);
+  } catch(e) {
+    errEl.textContent = '❌ ' + emailAuthError(e.code || '');
+    if (!errEl.textContent.trim() || errEl.textContent === '❌ ') errEl.textContent = '❌ ' + e.message;
+    errEl.style.display = 'flex';
+  }
+  setBtnLoading('chpw-btn', false);
 }
 
 // ============================================================
@@ -2495,7 +3492,7 @@ async function loadFamilyMembers() {
         ? `<img src="${m.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid ${isMe ? 'var(--primary)' : 'var(--border)'}" onerror="this.style.display='none'">`
         : `<div style="width:36px;height:36px;border-radius:50%;background:var(--primary-dim);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--primary-dark);border:2px solid ${isMe ? 'var(--primary)' : 'var(--border)'}">${(m.displayName||'?')[0].toUpperCase()}</div>`;
       return `
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
           ${avatar}
           <div style="flex:1;min-width:0">
             <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px">
@@ -2503,13 +3500,37 @@ async function loadFamilyMembers() {
               ${isMe ? '<span style="font-size:10px;background:var(--primary-dim);color:var(--primary-dark);padding:1px 7px;border-radius:999px;font-weight:800">Bạn</span>' : ''}
             </div>
             <div style="font-size:11px;color:var(--text3)">${roleLabel} · ${m.email || ''}</div>
-            <div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:var(--text3);margin-top:2px;word-break:break-all">${m.uid}</div>
           </div>
-          ${isMe ? `<button onclick="copyMyUID()" style="background:none;border:none;cursor:pointer;color:var(--primary);padding:4px" title="Copy UID"><span class="material-symbols-rounded" style="font-size:18px">content_copy</span></button>` : ''}
+          ${isMe
+            ? `<div style="display:flex;align-items:center;gap:6px">
+                 <button onclick="copyMyUID()" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:4px" title="Copy UID"><span class="material-symbols-rounded" style="font-size:18px">content_copy</span></button>
+                 <button onclick="leaveFamilyGroup()" style="background:none;border:1.5px solid var(--expense);color:var(--expense);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;padding:4px 8px;font-family:inherit;white-space:nowrap" title="Rời nhóm">Rời nhóm</button>
+               </div>`
+            : ''}
         </div>`;
     }).join('');
   } catch(e) {
     listEl.innerHTML = `<div style="font-size:12px;color:var(--expense)">Lỗi tải thành viên: ${e.code === 'permission-denied' ? 'Cần cập nhật Security Rules' : e.message}</div>`;
+  }
+}
+
+async function leaveFamilyGroup() {
+  if (!confirm('Bạn có chắc muốn rời khỏi nhóm gia đình này?\n\nDữ liệu cục bộ của bạn vẫn được giữ lại, chỉ ngắt kết nối đồng bộ.')) return;
+  try {
+    if (fbDb && fbFamilyId && googleUser?.uid) {
+      const { doc, deleteDoc } = window.fsSDK;
+      await deleteDoc(doc(fbDb, 'families', fbFamilyId, 'members', googleUser.uid));
+    }
+    // Disconnect locally
+    fbListeners.forEach(unsub => { try { unsub(); } catch(e){} });
+    fbListeners = []; fbDb = null; fbApp = null; fbFamilyId = null; fbConnected = false;
+    localStorage.removeItem('viGiaDinh_fbConfig');
+    localStorage.removeItem('viGiaDinh_fbFamily');
+    updateFirebaseStatusUI(false);
+    renderSettingsScreen();
+    toast('👋 Đã rời khỏi nhóm gia đình', 3000);
+  } catch(e) {
+    toast('❌ Không thể rời nhóm: ' + (e.code === 'permission-denied' ? 'Cần cập nhật Security Rules' : e.message), 4000);
   }
 }
 
@@ -2546,70 +3567,82 @@ async function signInWithFirebaseGoogle(fbApp) {
 }
 
 // ── Sign in Google inside the setup modal ────────────────────
+// Helper: populate the fb-user-card after any auth method
+function fbShowUserCard(firebaseUser) {
+  const provider = localStorage.getItem('viGiaDinh_authProvider') || 'google';
+  document.getElementById('fb-user-name').textContent  = firebaseUser.displayName || firebaseUser.email;
+  document.getElementById('fb-user-email').textContent = firebaseUser.email;
+  const avatarEl = document.getElementById('fb-user-avatar');
+  if (firebaseUser.photoURL) {
+    avatarEl.innerHTML = `<img src="${firebaseUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    avatarEl.textContent = (firebaseUser.displayName || firebaseUser.email || '?')[0].toUpperCase();
+  }
+  const badgeEl = document.getElementById('fb-user-badge');
+  if (badgeEl) {
+    if (provider === 'email') {
+      badgeEl.textContent = '📧 Email ✓';
+      badgeEl.className = 'auth-badge';
+      badgeEl.style.cssText = 'background:var(--primary-dim);color:var(--primary-dark);flex-shrink:0';
+    } else {
+      badgeEl.textContent = 'Google ✓';
+      badgeEl.className = 'auth-badge auth-badge-google';
+      badgeEl.style.cssText = 'flex-shrink:0';
+    }
+  }
+  document.getElementById('fb-user-card').style.display = 'flex';
+}
+
+// Helper: unlock step 2 after auth
+function fbUnlockStep2(firebaseUser) {
+  fbShowUserCard(firebaseUser);
+  document.getElementById('fb-step1-done').style.display = 'inline';
+  document.getElementById('fb-login-step').style.display = 'none';
+  const familyStep = document.getElementById('fb-family-step');
+  familyStep.style.opacity = '1';
+  familyStep.style.pointerEvents = 'auto';
+  const connectBtn = document.getElementById('fb-connect-btn');
+  connectBtn.disabled = false;
+  connectBtn.style.opacity = '1';
+  const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
+  if (savedFamily) document.getElementById('fb-family-id').value = savedFamily;
+  document.getElementById('fb-family-id').focus();
+}
+
 async function fbSignInGoogle() {
   const btn = document.getElementById('fb-google-btn');
   const errEl = document.getElementById('fb-connect-error');
   errEl.style.display = 'none';
   btn.disabled = true;
-  btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang đăng nhập...`;
+  btn.innerHTML = `<span class="material-symbols-rounded" style="animation:spin 1s linear infinite;font-size:20px">sync</span> Đang xử lý...`;
 
   try {
     const loaded = await loadFirebaseSDK();
     if (!loaded) throw new Error('Không tải được Firebase SDK');
+    await loadFirebaseAuth();
 
     const apps = window.fbSDK.getApps();
     const app  = apps.length > 0 ? window.fbSDK.getApp() : window.fbSDK.initializeApp(FIREBASE_CONFIG);
 
-    // Try restoring existing session first
+    // Try restoring existing session first (email or Google)
     let firebaseUser = await ensureFirebaseAuth(app);
     if (!firebaseUser) {
+      // No active session → sign in with Google popup
       firebaseUser = await signInWithFirebaseGoogle(app);
+      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, emailVerified: true };
+      localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+      localStorage.setItem('viGiaDinh_authProvider', 'google');
+      updateHeaderAvatar();
     }
 
-    // Save google user
-    googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
-    localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
-    updateHeaderAvatar();
-
-    // Update modal UI to show logged-in state
-    const card = document.getElementById('fb-user-card');
-    document.getElementById('fb-user-name').textContent  = firebaseUser.displayName || firebaseUser.email;
-    document.getElementById('fb-user-email').textContent = firebaseUser.email;
-    const avatarEl = document.getElementById('fb-user-avatar');
-    if (firebaseUser.photoURL) {
-      avatarEl.innerHTML = `<img src="${firebaseUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    } else {
-      avatarEl.textContent = (firebaseUser.displayName || '?')[0].toUpperCase();
-    }
-    card.style.display = 'flex';
-
-    // Mark step 1 done, unlock step 2
-    document.getElementById('fb-step1-done').style.display = 'inline';
-    btn.innerHTML = `<span class="material-symbols-rounded" style="font-size:18px;color:var(--income)">check_circle</span> Đã đăng nhập: ${firebaseUser.displayName}`;
-    btn.style.borderColor = 'var(--income)';
-    btn.style.color = 'var(--income)';
-    document.getElementById('fb-login-step').style.display = 'none';
-
-    const familyStep = document.getElementById('fb-family-step');
-    familyStep.style.opacity   = '1';
-    familyStep.style.pointerEvents = 'auto';
-
-    const connectBtn = document.getElementById('fb-connect-btn');
-    connectBtn.disabled = false;
-    connectBtn.style.opacity = '1';
-
-    // Pre-fill family ID if already saved
-    const savedFamily = localStorage.getItem('viGiaDinh_fbFamily');
-    if (savedFamily) document.getElementById('fb-family-id').value = savedFamily;
-
-    document.getElementById('fb-family-id').focus();
+    fbUnlockStep2(firebaseUser);
 
   } catch(e) {
     console.error('fbSignInGoogle error:', e);
     let msg = '';
-    if (e.code === 'auth/popup-blocked')         msg = 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
-    else if (e.code === 'auth/popup-closed-by-user') msg = 'Bạn đã đóng cửa sổ đăng nhập.';
-    else if (e.code === 'auth/unauthorized-domain') msg = 'Domain chưa được phép. Thêm domain này vào Firebase Console → Authentication → Settings → Authorized domains.';
+    if (e.code === 'auth/popup-blocked')              msg = 'Trình duyệt chặn popup — hãy cho phép popup cho trang này.';
+    else if (e.code === 'auth/popup-closed-by-user')  msg = 'Bạn đã đóng cửa sổ đăng nhập.';
+    else if (e.code === 'auth/unauthorized-domain')   msg = 'Domain chưa được phép. Thêm vào Firebase Console → Authentication → Authorized domains.';
     else msg = e.message;
     errEl.textContent = '❌ ' + msg;
     errEl.style.display = 'flex';
@@ -2644,10 +3677,16 @@ async function connectFirebase() {
     btn.innerHTML = '<span class="material-symbols-rounded" style="animation:spin 1s linear infinite">sync</span> Xác thực...';
     let firebaseUser = await ensureFirebaseAuth(fbApp);
     if (!firebaseUser) {
-      // Not signed in yet — do it now
+      // Check if we have a saved provider to show a helpful error
+      const savedProvider = localStorage.getItem('viGiaDinh_authProvider');
+      if (savedProvider === 'email') {
+        throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng xuất và đăng nhập lại bằng email.');
+      }
+      // Default: try Google
       firebaseUser = await signInWithFirebaseGoogle(fbApp);
-      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
+      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, emailVerified: true };
       localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+      localStorage.setItem('viGiaDinh_authProvider', 'google');
       updateHeaderAvatar();
     }
 
@@ -2907,19 +3946,13 @@ function openFirebaseSetup() {
   document.getElementById('fb-connect-error').style.display = 'none';
   fbGoStep(0);
 
-  // If already signed in to Google, pre-fill the user card
+  // If already signed in (any provider), pre-fill user card and unlock step 2
   const gUser = googleUser || (localStorage.getItem('viGiaDinh_googleUser') ? JSON.parse(localStorage.getItem('viGiaDinh_googleUser')) : null);
   if (gUser?.uid) {
-    document.getElementById('fb-user-name').textContent  = gUser.displayName || gUser.email;
-    document.getElementById('fb-user-email').textContent = gUser.email || '';
-    const avatarEl = document.getElementById('fb-user-avatar');
-    if (gUser.photoURL) {
-      avatarEl.innerHTML = `<img src="${gUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    } else {
-      avatarEl.textContent = (gUser.displayName || '?')[0].toUpperCase();
-    }
-    document.getElementById('fb-user-card').style.display = 'flex';
+    // Build a firebaseUser-like object from saved data
+    fbShowUserCard({ uid: gUser.uid, displayName: gUser.displayName, email: gUser.email, photoURL: gUser.photoURL || '' });
     document.getElementById('fb-login-step').style.display = 'none';
+    document.getElementById('fb-step1-done').style.display = 'inline';
 
     const familyStep = document.getElementById('fb-family-step');
     familyStep.style.opacity = '1';
@@ -2956,8 +3989,13 @@ async function autoReconnectFirebase() {
     // Restore Firebase Auth session (Firebase persists this in IndexedDB)
     const firebaseUser = await ensureFirebaseAuth(fbApp);
     if (firebaseUser) {
-      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL };
+      googleUser = { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL, emailVerified: firebaseUser.emailVerified };
       localStorage.setItem('viGiaDinh_googleUser', JSON.stringify(googleUser));
+      // Detect provider from Firebase if not already saved
+      if (!localStorage.getItem('viGiaDinh_authProvider')) {
+        const providerIds = firebaseUser.providerData?.map(p => p.providerId) || [];
+        localStorage.setItem('viGiaDinh_authProvider', providerIds.includes('password') ? 'email' : 'google');
+      }
       updateHeaderAvatar();
     }
 
